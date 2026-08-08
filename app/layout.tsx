@@ -14,33 +14,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://learn.andreyobruchkov.com"),
-  title: "ByteBeetle — Deep EVM Engineering Education",
+  title: "ByteBeetle — EVM Engineering Education",
   description:
-    "Evidence-driven EVM bootcamps, mentoring, and team training by Andrey Obruchkov.",
+    "Rigorous EVM bootcamps, mentoring, and team training built around runnable code and verifiable technical claims.",
   icons: {
     icon: "/andrey-logo.jpeg",
     shortcut: "/andrey-logo.jpeg",
   },
   openGraph: {
-    title: "ByteBeetle — Learn the EVM beneath the abstractions",
+    title: "ByteBeetle — EVM Engineering Education",
     description:
-      "Deep Ethereum bootcamps built from runnable code, tests, traces, and production failure modes.",
+      "Understand Ethereum at the level where it actually runs.",
     type: "website",
-    images: [
-      {
-        url: "/og.png",
-        width: 1733,
-        height: 909,
-        alt: "ByteBeetle — Learn the EVM beneath the abstractions",
-      },
-    ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "ByteBeetle — Deep EVM Engineering Education",
+    card: "summary",
+    title: "ByteBeetle — EVM Engineering Education",
     description:
-      "Learn execution, storage, signatures, gas, and integration behavior from executable evidence.",
-    images: ["/og.png"],
+      "Understand Ethereum at the level where it actually runs.",
   },
 };
 

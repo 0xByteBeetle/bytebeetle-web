@@ -29,27 +29,27 @@ test("server-renders the ByteBeetle landing page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>ByteBeetle — Deep EVM Engineering Education<\/title>/i);
-  assert.match(html, /Learn what happens/);
-  assert.match(html, /under the abstraction/);
+  assert.match(html, /<title>ByteBeetle — EVM Engineering Education<\/title>/i);
+  assert.match(html, /Understand Ethereum at the level where it actually runs/);
+  assert.match(html, /What you learn to do/);
   assert.match(html, /EVM Engineering Bootcamp/);
   assert.match(html, /Advanced EVM Bootcamp/);
-  assert.match(html, /146 tests passed/);
-  assert.match(html, /Mentored/);
+  assert.match(html, /Every code example shown in a lesson is maintained as runnable course code/);
+  assert.match(html, /One-to-one mentoring/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
-test("ships finished metadata and a project-bound social image", async () => {
+test("ships finished project metadata", async () => {
   const [layout, page] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(layout, /learn\.andreyobruchkov\.com/);
-  assert.match(layout, /\/og\.png/);
-  assert.match(layout, /ByteBeetle — Deep EVM Engineering Education/);
+  assert.match(layout, /ByteBeetle — EVM Engineering Education/);
+  assert.match(layout, /Understand Ethereum at the level where it actually runs/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
-  await access(new URL("../public/og.png", import.meta.url));
+  await access(new URL("../public/andrey-logo.jpeg", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });
