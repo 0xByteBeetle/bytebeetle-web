@@ -29,9 +29,10 @@ test("server-renders the ByteBeetle landing page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>ByteBeetle — EVM Engineering Education<\/title>/i);
-  assert.match(html, /Go beyond writing Solidity/);
-  assert.match(html, /After the course, you will be able to/);
+  assert.match(html, /<title>ByteBeetle — Multichain Engineering Education<\/title>/i);
+  assert.match(html, /Learn to reason across chains/);
+  assert.match(html, /The engineering perspective you develop/);
+  assert.match(html, /First learning track/);
   assert.match(html, /EVM Engineering Bootcamp/);
   assert.match(html, /Advanced EVM Bootcamp/);
   assert.match(html, /If code appears in a lesson, it exists on our side, it runs/);
@@ -46,8 +47,8 @@ test("ships finished project metadata", async () => {
   ]);
 
   assert.match(layout, /learn\.andreyobruchkov\.com/);
-  assert.match(layout, /ByteBeetle — EVM Engineering Education/);
-  assert.match(layout, /Understand Ethereum at the level where it actually runs/);
+  assert.match(layout, /ByteBeetle — Multichain Engineering Education/);
+  assert.match(layout, /Learn to reason across chains/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
   await access(new URL("../public/andrey-logo.jpeg", import.meta.url));

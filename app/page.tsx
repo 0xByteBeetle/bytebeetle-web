@@ -1,6 +1,6 @@
 const programs = [
   {
-    label: "Core program",
+    label: "EVM foundation",
     title: "EVM Engineering Bootcamp",
     summary:
       "Build the foundation that most Solidity courses skip. Understand how transactions become execution, how data moves through the EVM, and how to investigate contract behavior with confidence.",
@@ -10,7 +10,7 @@ const programs = [
     note: "20 focused modules with runnable Foundry labs",
   },
   {
-    label: "Advanced program",
+    label: "EVM advanced",
     title: "Advanced EVM Bootcamp",
     summary:
       "Study standards and integrations at implementation depth. Move from using established patterns to reviewing their assumptions, tradeoffs, and production failure modes.",
@@ -22,9 +22,9 @@ const programs = [
 ];
 
 const outcomes = [
-  "Debug a transaction from calldata to state change",
-  "Review signatures, token standards, and integration assumptions",
-  "Prove conclusions with tests, traces, and storage reads",
+  "Reason from chain architecture to application behavior",
+  "Investigate transactions, state, signatures, and messages",
+  "Evaluate integration and cross-chain assumptions before they fail",
 ];
 
 export default function Home() {
@@ -47,11 +47,12 @@ export default function Home() {
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">EVM engineering education</p>
-          <h1>Go beyond writing Solidity. Learn to reason about what the EVM will do.</h1>
+          <p className="eyebrow">Multichain engineering education</p>
+          <h1>Learn to reason across chains—not just deploy to one.</h1>
           <p className="hero-lede">
-            ByteBeetle is a set of rigorous Ethereum bootcamps built around clear
-            explanations, runnable code, and evidence you can reproduce yourself.
+            ByteBeetle teaches blockchain systems from the execution layer upward.
+            The first learning track begins with the EVM, using clear explanations,
+            runnable code, and evidence you can reproduce yourself.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#programs">Find your program</a>
@@ -63,21 +64,21 @@ export default function Home() {
         </div>
 
         <aside className="outcome-card" aria-label="Course outcomes">
-          <p className="outcome-heading">After the course, you will be able to</p>
+          <p className="outcome-heading">The engineering perspective you develop</p>
           <ul>
             {outcomes.map((outcome) => (
               <li key={outcome}><span aria-hidden="true">✓</span>{outcome}</li>
             ))}
           </ul>
-          <p className="outcome-note">The goal is technical independence—not memorized answers.</p>
+          <p className="outcome-note">The goal is judgment that transfers between ecosystems—not memorized answers for one stack.</p>
         </aside>
       </section>
 
       <section className="programs" id="programs">
         <div className="section-heading">
-          <p className="eyebrow">The programs</p>
-          <h2>Start at the level that matches your work.</h2>
-          <p>Both programs teach the same habit: understand the mechanism, inspect the implementation, and verify the claim.</p>
+          <p className="eyebrow">First learning track · EVM Engineering</p>
+          <h2>Begin with the most widely used smart-contract execution environment.</h2>
+          <p>The EVM track has two levels. Both teach the same transferable habit: understand the mechanism, inspect the implementation, and verify the claim.</p>
         </div>
 
         <div className="program-grid">
@@ -105,17 +106,22 @@ export default function Home() {
             </article>
           ))}
         </div>
+        <p className="track-note">
+          ByteBeetle is being built as a multichain education platform. Additional
+          chain-specific and cross-chain engineering tracks will follow the EVM track.
+        </p>
       </section>
 
       <section className="learning" id="learning">
         <div className="learning-copy">
-          <p className="eyebrow">How ByteBeetle works</p>
-          <h2>This is not a collection of videos to watch.</h2>
+          <p className="eyebrow">How ByteBeetle teaches</p>
+          <h2>Learn the ideas that transfer between ecosystems.</h2>
           <p>
             Each module develops a mental model, puts the relevant implementation
             in front of you, and gives you a runnable way to verify what you learned.
             Technical questions test the explanation. Hands-on questions test whether
-            you can use it.
+            you can use it. The objective is to understand the underlying engineering
+            problem well enough to compare how different chains solve it.
           </p>
           <blockquote>
             “If code appears in a lesson, it exists on our side, it runs, and its output has been inspected.”
@@ -140,12 +146,12 @@ export default function Home() {
 
       <section className="closing" id="about">
         <div className="about">
-          <p className="eyebrow">About</p>
+          <p className="eyebrow">About ByteBeetle</p>
           <h2>Built from engineering work, not course templates.</h2>
           <p>
             Andrey Obruchkov works across smart contracts, multi-chain systems,
             infrastructure, Go, and Rust. ByteBeetle turns that experience into
-            careful, evidence-driven EVM education.
+            careful, evidence-driven multichain engineering education.
           </p>
           <div className="profile-links">
             <a href="https://andreyobruchkov.com" target="_blank" rel="noreferrer">Personal site ↗</a>
@@ -157,8 +163,8 @@ export default function Home() {
 
         <div className="enrollment-card">
           <p className="eyebrow">Enrollment</p>
-          <h2>Learn the system, not only the syntax.</h2>
-          <p>Join the list for course availability, new modules, public labs, and technical writing.</p>
+          <h2>Build knowledge that travels across chains.</h2>
+          <p>Join the list for EVM course availability, future learning tracks, public labs, and technical writing.</p>
           <a className="button button-light" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
             Join the ByteBeetle list
           </a>
@@ -170,7 +176,7 @@ export default function Home() {
           <span className="brand-mark" aria-hidden="true">B</span>
           <span>ByteBeetle</span>
         </a>
-        <p>EVM engineering education by Andrey Obruchkov.</p>
+        <p>Multichain engineering education by Andrey Obruchkov.</p>
         <p>© 2026</p>
       </footer>
     </main>
