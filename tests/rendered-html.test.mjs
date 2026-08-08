@@ -30,13 +30,15 @@ test("server-renders the 0xByteBeetle landing page", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>0xByteBeetle: Multichain Engineering Education<\/title>/i);
-  assert.match(html, /Learn to reason across chains/);
-  assert.match(html, /What you will learn to do/);
-  assert.match(html, /First learning track/);
+  assert.match(html, /Notes, bootcamps, and practical experiments/);
+  assert.match(html, /What I am exploring/);
+  assert.match(html, /Writing/);
   assert.match(html, /EVM Engineering Bootcamp/);
   assert.match(html, /Advanced EVM Bootcamp/);
   assert.match(html, /If code appears in a lesson, it exists on our side, it runs/);
-  assert.match(html, /One-to-one sessions/);
+  assert.match(html, /Send me a note/);
+  assert.match(html, /Telegram/);
+  assert.match(html, /Discord/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -48,9 +50,12 @@ test("ships finished project metadata", async () => {
 
   assert.match(layout, /learn\.andreyobruchkov\.com/);
   assert.match(layout, /0xByteBeetle: Multichain Engineering Education/);
-  assert.match(layout, /Learn to reason across chains/);
+  assert.match(layout, /Notes, bootcamps, and practical experiments/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
   await access(new URL("../public/andrey-logo.jpeg", import.meta.url));
+  await access(new URL("../drizzle/0000_contact_submissions.sql", import.meta.url));
+  await access(new URL("../app/api/contact/route.ts", import.meta.url));
+  await access(new URL("../app/inbox/page.tsx", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });

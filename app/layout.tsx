@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://learn.andreyobruchkov.com"),
   title: "0xByteBeetle: Multichain Engineering Education",
   description:
-    "Rigorous multichain engineering education beginning with an evidence-driven EVM learning track.",
+    "Notes, bootcamps, and practical experiments in multichain engineering by Andrey Obruchkov.",
   icons: {
     icon: "/andrey-logo.jpeg",
     shortcut: "/andrey-logo.jpeg",
@@ -24,14 +24,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "0xByteBeetle: Multichain Engineering Education",
     description:
-      "Learn to reason across chains, not just deploy to one.",
+      "Notes, bootcamps, and practical experiments in multichain engineering.",
     type: "website",
   },
   twitter: {
     card: "summary",
     title: "0xByteBeetle: Multichain Engineering Education",
     description:
-      "Learn to reason across chains, not just deploy to one.",
+      "Notes, bootcamps, and practical experiments in multichain engineering.",
   },
 };
 

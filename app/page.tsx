@@ -1,30 +1,24 @@
-const programs = [
+import ContactForm from "./contact-form";
+
+const bootcamps = [
   {
     label: "EVM foundation",
     title: "EVM Engineering Bootcamp",
-    summary:
-      "Build the foundation that most Solidity courses skip. Understand how transactions become execution, how data moves through the EVM, and how to investigate contract behavior with confidence.",
-    bestFor: "Developers with basic Solidity knowledge who want a complete mental model.",
-    topics: "Execution, calldata, transactions, signing, observability, tokens, testing, and protocol development.",
-    result: "You can explain and debug contract behavior instead of relying on framework assumptions.",
+    description:
+      "A complete foundation in execution, calldata, transactions, signing, observability, tokens, testing, and protocol development.",
+    forWhom:
+      "For developers who know basic Solidity and want to understand what happens beneath the public interface.",
     note: "20 focused modules with runnable Foundry labs",
   },
   {
     label: "EVM advanced",
     title: "Advanced EVM Bootcamp",
-    summary:
-      "Study standards and integrations at implementation depth. Move from using established patterns to reviewing their assumptions, tradeoffs, and production failure modes.",
-    bestFor: "Working Solidity engineers who already understand the fundamentals.",
-    topics: "Token internals, typed signatures, permit flows, storage, gas behavior, integration risk, and adversarial testing.",
-    result: "You can design and review production systems with stronger technical judgment.",
-    note: "Deep modules with verified reference projects",
+    description:
+      "A deeper study of token internals, typed signatures, permit flows, storage, gas behavior, integration risk, and adversarial testing.",
+    forWhom:
+      "For working Solidity engineers who want to review standards and production systems with stronger technical judgment.",
+    note: "Long-form modules with verified reference projects",
   },
-];
-
-const outcomes = [
-  "Reason from chain architecture to application behavior",
-  "Investigate transactions, state, signatures, and messages",
-  "Evaluate integration and cross-chain assumptions before they fail",
 ];
 
 export default function Home() {
@@ -36,138 +30,114 @@ export default function Home() {
           <span>0xByteBeetle</span>
         </a>
         <nav aria-label="Main navigation">
-          <a href="#programs">Programs</a>
-          <a href="#learning">How it works</a>
+          <a href="#writing">Writing</a>
+          <a href="#bootcamps">Bootcamps</a>
           <a href="#about">About</a>
+          <a href="#contact">Contact</a>
         </nav>
-        <a className="header-action" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
-          Join the course list
+        <a className="header-action" href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">
+          GitHub ↗
         </a>
       </header>
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Multichain engineering education</p>
-          <h1>Learn to reason across chains, not just deploy to one.</h1>
+          <p className="eyebrow">By Andrey Obruchkov</p>
+          <h1>Notes, bootcamps, and practical experiments in multichain engineering.</h1>
           <p className="hero-lede">
-            0xByteBeetle helps you understand how blockchain systems really work.
-            We are starting with the EVM and teaching it through clear explanations,
-            runnable code, and results you can reproduce yourself.
+            I use 0xByteBeetle to take blockchain systems apart and explain how they
+            behave. The first learning track is focused on the EVM. Over time, the
+            work will expand into more chains and cross-chain engineering.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#programs">Find your program</a>
-            <a className="button button-secondary" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
-              Receive enrollment updates
-            </a>
+            <a className="button button-primary" href="#writing">Read the writing</a>
+            <a className="button button-secondary" href="#bootcamps">Explore the bootcamps</a>
           </div>
-          <p className="byline">Created and taught by Andrey Obruchkov, blockchain engineer and protocol builder.</p>
         </div>
 
-        <aside className="outcome-card" aria-label="Course outcomes">
-          <p className="outcome-heading">What you will learn to do</p>
+        <aside className="focus-card" aria-label="Topics covered by 0xByteBeetle">
+          <p className="focus-heading">What I am exploring</p>
           <ul>
-            {outcomes.map((outcome) => (
-              <li key={outcome}><span aria-hidden="true">✓</span>{outcome}</li>
-            ))}
+            <li>EVM execution, storage, and transaction behavior</li>
+            <li>Token standards, signatures, and protocol design</li>
+            <li>Cross-chain systems and integration assumptions</li>
+            <li>Infrastructure, Go, Rust, and engineering practice</li>
           </ul>
-          <p className="outcome-note">The goal is to help you make good technical decisions across ecosystems. You will not be memorizing answers for one stack.</p>
         </aside>
       </section>
 
-      <section className="programs" id="programs">
-        <div className="section-heading">
-          <p className="eyebrow">First learning track · EVM Engineering</p>
-          <h2>We are starting with EVM engineering.</h2>
-          <p>The first track has two levels. In both of them, you will learn to understand the mechanism, inspect the implementation, and check the result yourself.</p>
+      <section className="writing-section" id="writing">
+        <div className="section-heading compact-heading">
+          <p className="eyebrow">Writing</p>
+          <h2>Ideas I am working through in public.</h2>
+          <p>I write about the technical details I find useful while building, teaching, and investigating blockchain systems.</p>
         </div>
 
-        <div className="program-grid">
-          {programs.map((program) => (
-            <article className="program-card" key={program.title}>
-              <p className="program-label">{program.label}</p>
-              <h3>{program.title}</h3>
-              <p className="program-summary">{program.summary}</p>
-              <div className="program-detail">
-                <h4>Best for</h4>
-                <p>{program.bestFor}</p>
-              </div>
-              <div className="program-detail">
-                <h4>What you study</h4>
-                <p>{program.topics}</p>
-              </div>
-              <div className="program-detail">
-                <h4>What changes</h4>
-                <p>{program.result}</p>
-              </div>
-              <p className="program-note">{program.note}</p>
-              <a className="text-link" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
-                Get program information <span aria-hidden="true">→</span>
-              </a>
+        <div className="writing-grid">
+          <a className="writing-card" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
+            <p className="platform-label">Substack</p>
+            <h3>Long-form notes and new work</h3>
+            <p>Follow new articles, course updates, public labs, and ideas that are still developing.</p>
+            <span>Read on Substack ↗</span>
+          </a>
+          <a className="writing-card" href="https://medium.com/@andrey_obruchkov" target="_blank" rel="noreferrer">
+            <p className="platform-label">Medium</p>
+            <h3>Technical articles and earlier writing</h3>
+            <p>Browse published explanations and practical pieces from my previous work.</p>
+            <span>Read on Medium ↗</span>
+          </a>
+        </div>
+      </section>
+
+      <section className="bootcamps-section" id="bootcamps">
+        <div className="section-heading">
+          <p className="eyebrow">Bootcamps</p>
+          <h2>The EVM is the first learning track.</h2>
+          <p>These are not short video collections. Each module combines a careful explanation, code you can run, and questions that make you check whether you really understand the mechanism.</p>
+        </div>
+
+        <div className="bootcamp-grid">
+          {bootcamps.map((bootcamp) => (
+            <article className="bootcamp-card" key={bootcamp.title}>
+              <p className="platform-label">{bootcamp.label}</p>
+              <h3>{bootcamp.title}</h3>
+              <p>{bootcamp.description}</p>
+              <p className="for-whom"><strong>Who it is for:</strong> {bootcamp.forWhom}</p>
+              <p className="bootcamp-note">{bootcamp.note}</p>
             </article>
           ))}
         </div>
-        <p className="track-note">
-          EVM is the first track, but it is not the whole 0xByteBeetle vision. As the
-          platform grows, it will expand into more chain-specific and cross-chain engineering topics.
-        </p>
-      </section>
 
-      <section className="learning" id="learning">
-        <div className="learning-copy">
-          <p className="eyebrow">How 0xByteBeetle teaches</p>
-          <h2>You will not just watch videos and copy code.</h2>
-          <p>
-            Each module helps you build a clear mental model, shows you the relevant
-            implementation, and gives you runnable examples so you can check the behavior
-            yourself. Technical questions make sure the explanation is clear. Hands-on
-            questions make sure you can actually use what you learned. This gives you a
-            foundation for comparing how different chains solve similar problems.
-          </p>
-          <blockquote>
-            “If code appears in a lesson, it exists on our side, it runs, and its output has been inspected.”
-          </blockquote>
-        </div>
-
-        <div className="learning-options">
-          <article>
-            <p className="option-label">Independent</p>
-            <h3>Follow the complete program at your own pace.</h3>
-            <p>Long-form lessons, runnable exercises, technical questions, hands-on questions, and reference solutions.</p>
-            <a href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">Join course updates ↗</a>
-          </article>
-          <article>
-            <p className="option-label">With guidance</p>
-            <h3>Add direct mentoring or bring the program to your team.</h3>
-            <p>One-to-one sessions, code review, debugging support, or private training adapted to an engineering organization.</p>
-            <a href="https://www.linkedin.com/in/andrey-obruchkov/" target="_blank" rel="noreferrer">Discuss the right format ↗</a>
-          </article>
+        <div className="teaching-note">
+          <p className="eyebrow">The course rule</p>
+          <blockquote>“If code appears in a lesson, it exists on our side, it runs, and its output has been inspected.”</blockquote>
+          <p>Technical questions test the explanation. Hands-on questions test whether you can use it. Solutions and reference projects stay separate from the student material.</p>
+          <a href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">Follow the bootcamp work ↗</a>
         </div>
       </section>
 
-      <section className="closing" id="about">
-        <div className="about">
-          <p className="eyebrow">About 0xByteBeetle</p>
-          <h2>Built from engineering work, not course templates.</h2>
+      <section className="about-contact" id="about">
+        <div className="about-copy">
+          <p className="eyebrow">About</p>
+          <h2>I build systems and teach what I learn from them.</h2>
           <p>
-            Andrey Obruchkov works across smart contracts, multi-chain systems,
-            infrastructure, Go, and Rust. 0xByteBeetle turns that experience into
-            careful, evidence-driven multichain engineering education.
+            I am Andrey Obruchkov, a blockchain engineer and protocol builder working
+            across smart contracts, multichain systems, infrastructure, Go, and Rust.
+            0xByteBeetle is where I collect the explanations, examples, and learning
+            material that come out of that work.
           </p>
           <div className="profile-links">
             <a href="https://andreyobruchkov.com" target="_blank" rel="noreferrer">Personal site ↗</a>
-            <a href="https://medium.com/@andrey_obruchkov" target="_blank" rel="noreferrer">Medium ↗</a>
-            <a href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">Substack ↗</a>
+            <a href="https://www.linkedin.com/in/andrey-obruchkov/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
             <a href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">GitHub ↗</a>
           </div>
         </div>
 
-        <div className="enrollment-card">
-          <p className="eyebrow">Enrollment</p>
-          <h2>Build knowledge you can use across chains.</h2>
-          <p>Join the list for EVM course availability, future learning tracks, public labs, and technical writing.</p>
-          <a className="button button-light" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
-            Join the 0xByteBeetle list
-          </a>
+        <div className="contact-panel" id="contact">
+          <p className="eyebrow">Contact</p>
+          <h2>Send me a note.</h2>
+          <p className="contact-intro">Bootcamps, mentoring, team training, writing, protocol work, or simply an interesting technical question are all welcome.</p>
+          <ContactForm />
         </div>
       </section>
 
@@ -176,8 +146,8 @@ export default function Home() {
           <span className="brand-mark" aria-hidden="true">0x</span>
           <span>0xByteBeetle</span>
         </a>
-        <p>Multichain engineering education by Andrey Obruchkov.</p>
-        <p>© 2026</p>
+        <p>Multichain engineering notes and education.</p>
+        <a className="owner-link" href="/inbox">Owner inbox</a>
       </footer>
     </main>
   );
