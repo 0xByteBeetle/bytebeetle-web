@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://learn.andreyobruchkov.com"),
-  title: "ByteBeetle — Multichain Engineering Education",
+  title: "ByteBeetle: Multichain Engineering Education",
   description:
     "Rigorous multichain engineering education beginning with an evidence-driven EVM learning track.",
   icons: {
@@ -22,16 +22,16 @@ export const metadata: Metadata = {
     shortcut: "/andrey-logo.jpeg",
   },
   openGraph: {
-    title: "ByteBeetle — Multichain Engineering Education",
+    title: "ByteBeetle: Multichain Engineering Education",
     description:
-      "Learn to reason across chains—not just deploy to one.",
+      "Learn to reason across chains, not just deploy to one.",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "ByteBeetle — Multichain Engineering Education",
+    title: "ByteBeetle: Multichain Engineering Education",
     description:
-      "Learn to reason across chains—not just deploy to one.",
+      "Learn to reason across chains, not just deploy to one.",
   },
 };
 

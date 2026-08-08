@@ -48,11 +48,11 @@ export default function Home() {
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Multichain engineering education</p>
-          <h1>Learn to reason across chains—not just deploy to one.</h1>
+          <h1>Learn to reason across chains, not just deploy to one.</h1>
           <p className="hero-lede">
-            ByteBeetle teaches blockchain systems from the execution layer upward.
-            The first learning track begins with the EVM, using clear explanations,
-            runnable code, and evidence you can reproduce yourself.
+            ByteBeetle helps you understand how blockchain systems really work.
+            We are starting with the EVM and teaching it through clear explanations,
+            runnable code, and results you can reproduce yourself.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#programs">Find your program</a>
@@ -64,21 +64,21 @@ export default function Home() {
         </div>
 
         <aside className="outcome-card" aria-label="Course outcomes">
-          <p className="outcome-heading">The engineering perspective you develop</p>
+          <p className="outcome-heading">What you will learn to do</p>
           <ul>
             {outcomes.map((outcome) => (
               <li key={outcome}><span aria-hidden="true">✓</span>{outcome}</li>
             ))}
           </ul>
-          <p className="outcome-note">The goal is judgment that transfers between ecosystems—not memorized answers for one stack.</p>
+          <p className="outcome-note">The goal is to help you make good technical decisions across ecosystems. You will not be memorizing answers for one stack.</p>
         </aside>
       </section>
 
       <section className="programs" id="programs">
         <div className="section-heading">
           <p className="eyebrow">First learning track · EVM Engineering</p>
-          <h2>Begin with the most widely used smart-contract execution environment.</h2>
-          <p>The EVM track has two levels. Both teach the same transferable habit: understand the mechanism, inspect the implementation, and verify the claim.</p>
+          <h2>We are starting with EVM engineering.</h2>
+          <p>The first track has two levels. In both of them, you will learn to understand the mechanism, inspect the implementation, and check the result yourself.</p>
         </div>
 
         <div className="program-grid">
@@ -107,21 +107,21 @@ export default function Home() {
           ))}
         </div>
         <p className="track-note">
-          ByteBeetle is being built as a multichain education platform. Additional
-          chain-specific and cross-chain engineering tracks will follow the EVM track.
+          EVM is the first track, but it is not the whole ByteBeetle vision. As the
+          platform grows, it will expand into more chain-specific and cross-chain engineering topics.
         </p>
       </section>
 
       <section className="learning" id="learning">
         <div className="learning-copy">
           <p className="eyebrow">How ByteBeetle teaches</p>
-          <h2>Learn the ideas that transfer between ecosystems.</h2>
+          <h2>You will not just watch videos and copy code.</h2>
           <p>
-            Each module develops a mental model, puts the relevant implementation
-            in front of you, and gives you a runnable way to verify what you learned.
-            Technical questions test the explanation. Hands-on questions test whether
-            you can use it. The objective is to understand the underlying engineering
-            problem well enough to compare how different chains solve it.
+            Each module helps you build a clear mental model, shows you the relevant
+            implementation, and gives you runnable examples so you can check the behavior
+            yourself. Technical questions make sure the explanation is clear. Hands-on
+            questions make sure you can actually use what you learned. This gives you a
+            foundation for comparing how different chains solve similar problems.
           </p>
           <blockquote>
             “If code appears in a lesson, it exists on our side, it runs, and its output has been inspected.”
@@ -163,7 +163,7 @@ export default function Home() {
 
         <div className="enrollment-card">
           <p className="eyebrow">Enrollment</p>
-          <h2>Build knowledge that travels across chains.</h2>
+          <h2>Build knowledge you can use across chains.</h2>
           <p>Join the list for EVM course availability, future learning tracks, public labs, and technical writing.</p>
           <a className="button button-light" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
             Join the ByteBeetle list

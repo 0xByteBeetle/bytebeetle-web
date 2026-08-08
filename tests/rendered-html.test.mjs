@@ -29,9 +29,9 @@ test("server-renders the ByteBeetle landing page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>ByteBeetle — Multichain Engineering Education<\/title>/i);
+  assert.match(html, /<title>ByteBeetle: Multichain Engineering Education<\/title>/i);
   assert.match(html, /Learn to reason across chains/);
-  assert.match(html, /The engineering perspective you develop/);
+  assert.match(html, /What you will learn to do/);
   assert.match(html, /First learning track/);
   assert.match(html, /EVM Engineering Bootcamp/);
   assert.match(html, /Advanced EVM Bootcamp/);
@@ -47,7 +47,7 @@ test("ships finished project metadata", async () => {
   ]);
 
   assert.match(layout, /learn\.andreyobruchkov\.com/);
-  assert.match(layout, /ByteBeetle — Multichain Engineering Education/);
+  assert.match(layout, /ByteBeetle: Multichain Engineering Education/);
   assert.match(layout, /Learn to reason across chains/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
