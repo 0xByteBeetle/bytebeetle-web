@@ -1,6 +1,6 @@
-# ByteBeetle Web
+# 0xByteBeetle Web
 
-Public website for ByteBeetle's EVM engineering bootcamps, mentoring, technical writing, and team training.
+Public website for 0xByteBeetle's multichain engineering education, beginning with EVM bootcamps, mentoring, technical writing, and team training.
 
 Google Docs and the private course repositories remain the source of truth for paid lesson content. This repository contains only the public website and its approved public claims.
 

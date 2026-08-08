@@ -23,13 +23,13 @@ async function render() {
   );
 }
 
-test("server-renders the ByteBeetle landing page", async () => {
+test("server-renders the 0xByteBeetle landing page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>ByteBeetle: Multichain Engineering Education<\/title>/i);
+  assert.match(html, /<title>0xByteBeetle: Multichain Engineering Education<\/title>/i);
   assert.match(html, /Learn to reason across chains/);
   assert.match(html, /What you will learn to do/);
   assert.match(html, /First learning track/);
@@ -47,7 +47,7 @@ test("ships finished project metadata", async () => {
   ]);
 
   assert.match(layout, /learn\.andreyobruchkov\.com/);
-  assert.match(layout, /ByteBeetle: Multichain Engineering Education/);
+  assert.match(layout, /0xByteBeetle: Multichain Engineering Education/);
   assert.match(layout, /Learn to reason across chains/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);

@@ -31,9 +31,9 @@ export default function Home() {
   return (
     <main id="top">
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="ByteBeetle home">
-          <span className="brand-mark" aria-hidden="true">B</span>
-          <span>ByteBeetle</span>
+        <a className="brand" href="#top" aria-label="0xByteBeetle home">
+          <span className="brand-mark" aria-hidden="true">0x</span>
+          <span>0xByteBeetle</span>
         </a>
         <nav aria-label="Main navigation">
           <a href="#programs">Programs</a>
@@ -50,7 +50,7 @@ export default function Home() {
           <p className="eyebrow">Multichain engineering education</p>
           <h1>Learn to reason across chains, not just deploy to one.</h1>
           <p className="hero-lede">
-            ByteBeetle helps you understand how blockchain systems really work.
+            0xByteBeetle helps you understand how blockchain systems really work.
             We are starting with the EVM and teaching it through clear explanations,
             runnable code, and results you can reproduce yourself.
           </p>
@@ -107,14 +107,14 @@ export default function Home() {
           ))}
         </div>
         <p className="track-note">
-          EVM is the first track, but it is not the whole ByteBeetle vision. As the
+          EVM is the first track, but it is not the whole 0xByteBeetle vision. As the
           platform grows, it will expand into more chain-specific and cross-chain engineering topics.
         </p>
       </section>
 
       <section className="learning" id="learning">
         <div className="learning-copy">
-          <p className="eyebrow">How ByteBeetle teaches</p>
+          <p className="eyebrow">How 0xByteBeetle teaches</p>
           <h2>You will not just watch videos and copy code.</h2>
           <p>
             Each module helps you build a clear mental model, shows you the relevant
@@ -146,11 +146,11 @@ export default function Home() {
 
       <section className="closing" id="about">
         <div className="about">
-          <p className="eyebrow">About ByteBeetle</p>
+          <p className="eyebrow">About 0xByteBeetle</p>
           <h2>Built from engineering work, not course templates.</h2>
           <p>
             Andrey Obruchkov works across smart contracts, multi-chain systems,
-            infrastructure, Go, and Rust. ByteBeetle turns that experience into
+            infrastructure, Go, and Rust. 0xByteBeetle turns that experience into
             careful, evidence-driven multichain engineering education.
           </p>
           <div className="profile-links">
@@ -166,15 +166,15 @@ export default function Home() {
           <h2>Build knowledge you can use across chains.</h2>
           <p>Join the list for EVM course availability, future learning tracks, public labs, and technical writing.</p>
           <a className="button button-light" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
-            Join the ByteBeetle list
+            Join the 0xByteBeetle list
           </a>
         </div>
       </section>
 
       <footer>
-        <a className="brand" href="#top" aria-label="ByteBeetle home">
-          <span className="brand-mark" aria-hidden="true">B</span>
-          <span>ByteBeetle</span>
+        <a className="brand" href="#top" aria-label="0xByteBeetle home">
+          <span className="brand-mark" aria-hidden="true">0x</span>
+          <span>0xByteBeetle</span>
         </a>
         <p>Multichain engineering education by Andrey Obruchkov.</p>
         <p>© 2026</p>
