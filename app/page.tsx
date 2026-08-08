@@ -1,22 +1,22 @@
 import ContactForm from "./contact-form";
+import { substackArticles } from "./content";
+import { SiteFooter, SiteHeader } from "./site-shell";
 
 const bootcamps = [
   {
-    label: "EVM foundation",
+    label: "Complete foundation",
     title: "EVM Engineering Bootcamp",
+    href: "/bootcamps/evm-engineering",
     description:
       "A complete foundation in execution, calldata, transactions, signing, observability, tokens, testing, and protocol development.",
-    forWhom:
-      "For developers who know basic Solidity and want to understand what happens beneath the public interface.",
-    note: "20 focused modules with runnable Foundry labs",
+    note: "A six-week path with runnable Foundry labs",
   },
   {
-    label: "EVM advanced",
+    label: "In development",
     title: "Advanced EVM Bootcamp",
+    href: "/bootcamps/advanced-evm",
     description:
       "A deeper study of token internals, typed signatures, permit flows, storage, gas behavior, integration risk, and adversarial testing.",
-    forWhom:
-      "For working Solidity engineers who want to review standards and production systems with stronger technical judgment.",
     note: "Long-form modules with verified reference projects",
   },
 ];
@@ -24,21 +24,7 @@ const bootcamps = [
 export default function Home() {
   return (
     <main id="top">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="0xByteBeetle home">
-          <span className="brand-mark" aria-hidden="true">0x</span>
-          <span>0xByteBeetle</span>
-        </a>
-        <nav aria-label="Main navigation">
-          <a href="#writing">Writing</a>
-          <a href="#bootcamps">Bootcamps</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <a className="header-action" href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">
-          GitHub ↗
-        </a>
-      </header>
+      <SiteHeader />
 
       <section className="hero">
         <div className="hero-copy">
@@ -46,12 +32,12 @@ export default function Home() {
           <h1>Notes, bootcamps, and practical experiments in multichain engineering.</h1>
           <p className="hero-lede">
             I use 0xByteBeetle to take blockchain systems apart and explain how they
-            behave. The first learning track is focused on the EVM. Over time, the
-            work will expand into more chains and cross-chain engineering.
+            behave. The first learning track is focused on the EVM. The writing already
+            extends into Solana, and the work will continue across chains.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#writing">Read the writing</a>
-            <a className="button button-secondary" href="#bootcamps">Explore the bootcamps</a>
+            <a className="button button-primary" href="/blogs">Read the blogs</a>
+            <a className="button button-secondary" href="/bootcamps">Explore the bootcamps</a>
           </div>
         </div>
 
@@ -59,7 +45,7 @@ export default function Home() {
           <p className="focus-heading">What I am exploring</p>
           <ul>
             <li>EVM execution, storage, and transaction behavior</li>
-            <li>Token standards, signatures, and protocol design</li>
+            <li>Solana programs, accounts, tokens, and runtime mechanics</li>
             <li>Cross-chain systems and integration assumptions</li>
             <li>Infrastructure, Go, Rust, and engineering practice</li>
           </ul>
@@ -67,44 +53,45 @@ export default function Home() {
       </section>
 
       <section className="writing-section" id="writing">
-        <div className="section-heading compact-heading">
-          <p className="eyebrow">Writing</p>
-          <h2>Ideas I am working through in public.</h2>
-          <p>I write about the technical details I find useful while building, teaching, and investigating blockchain systems.</p>
+        <div className="section-heading compact-heading section-heading-row">
+          <div>
+            <p className="eyebrow">Blogs</p>
+            <h2>Ideas I am working through in public.</h2>
+            <p>Long-form explanations built from source code, real executions, and the questions that appear while building systems.</p>
+          </div>
+          <a className="text-link" href="/blogs">Browse all blogs →</a>
         </div>
 
-        <div className="writing-grid">
-          <a className="writing-card" href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">
-            <p className="platform-label">Substack</p>
-            <h3>Long-form notes and new work</h3>
-            <p>Follow new articles, course updates, public labs, and ideas that are still developing.</p>
-            <span>Read on Substack ↗</span>
-          </a>
-          <a className="writing-card" href="https://medium.com/@andrey_obruchkov" target="_blank" rel="noreferrer">
-            <p className="platform-label">Medium</p>
-            <h3>Technical articles and earlier writing</h3>
-            <p>Browse published explanations and practical pieces from my previous work.</p>
-            <span>Read on Medium ↗</span>
-          </a>
+        <div className="article-preview-grid">
+          {substackArticles.slice(0, 3).map((article) => (
+            <a className="article-preview" href={article.href} target="_blank" rel="noreferrer" key={article.href}>
+              <div className="article-meta"><span>{article.topic}</span><span>{article.date}</span></div>
+              <h3>{article.title}</h3>
+              <span className="text-link">Read article ↗</span>
+            </a>
+          ))}
         </div>
       </section>
 
       <section className="bootcamps-section" id="bootcamps">
-        <div className="section-heading">
-          <p className="eyebrow">Bootcamps</p>
-          <h2>The EVM is the first learning track.</h2>
-          <p>These are not short video collections. Each module combines a careful explanation, code you can run, and questions that make you check whether you really understand the mechanism.</p>
+        <div className="section-heading section-heading-row">
+          <div>
+            <p className="eyebrow">Bootcamps</p>
+            <h2>The EVM is the first learning track.</h2>
+            <p>Each module combines a careful explanation, code you can run, and questions that make you check whether you understand the mechanism.</p>
+          </div>
+          <a className="text-link" href="/bootcamps">See curricula and format →</a>
         </div>
 
         <div className="bootcamp-grid">
           {bootcamps.map((bootcamp) => (
-            <article className="bootcamp-card" key={bootcamp.title}>
+            <a className="bootcamp-card linked-card" href={bootcamp.href} key={bootcamp.title}>
               <p className="platform-label">{bootcamp.label}</p>
               <h3>{bootcamp.title}</h3>
               <p>{bootcamp.description}</p>
-              <p className="for-whom"><strong>Who it is for:</strong> {bootcamp.forWhom}</p>
               <p className="bootcamp-note">{bootcamp.note}</p>
-            </article>
+              <span className="text-link">Explore this bootcamp →</span>
+            </a>
           ))}
         </div>
 
@@ -112,7 +99,7 @@ export default function Home() {
           <p className="eyebrow">The course rule</p>
           <blockquote>“If code appears in a lesson, it exists on our side, it runs, and its output has been inspected.”</blockquote>
           <p>Technical questions test the explanation. Hands-on questions test whether you can use it. Solutions and reference projects stay separate from the student material.</p>
-          <a href="https://substack.com/@andreyobruchkov" target="_blank" rel="noreferrer">Follow the bootcamp work ↗</a>
+          <a href="/resources">Explore the public resources →</a>
         </div>
       </section>
 
@@ -127,9 +114,8 @@ export default function Home() {
             material that come out of that work.
           </p>
           <div className="profile-links">
-            <a href="https://andreyobruchkov.com" target="_blank" rel="noreferrer">Personal site ↗</a>
-            <a href="https://www.linkedin.com/in/andrey-obruchkov/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
-            <a href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">GitHub ↗</a>
+            <a href="/about">Read more about the work →</a>
+            <a href="/resources">Browse resources →</a>
           </div>
         </div>
 
@@ -138,17 +124,11 @@ export default function Home() {
           <h2>Send me a note.</h2>
           <p className="contact-intro">Bootcamps, mentoring, team training, writing, protocol work, or simply an interesting technical question are all welcome.</p>
           <ContactForm />
+          <a className="contact-page-link" href="/contact">Open the dedicated contact page →</a>
         </div>
       </section>
 
-      <footer>
-        <a className="brand" href="#top" aria-label="0xByteBeetle home">
-          <span className="brand-mark" aria-hidden="true">0x</span>
-          <span>0xByteBeetle</span>
-        </a>
-        <p>Multichain engineering notes and education.</p>
-        <a className="owner-link" href="/inbox">Owner inbox</a>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

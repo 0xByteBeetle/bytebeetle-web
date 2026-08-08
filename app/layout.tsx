@@ -26,12 +26,21 @@ export const metadata: Metadata = {
     description:
       "Notes, bootcamps, and practical experiments in multichain engineering.",
     type: "website",
+    images: [
+      {
+        url: "https://bytebeetle-learn.andreyobruchkov1996.chatgpt.site/og-v2.png",
+        width: 1731,
+        height: 909,
+        alt: "0xByteBeetle multichain engineering notes and bootcamps",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "0xByteBeetle: Multichain Engineering Education",
     description:
       "Notes, bootcamps, and practical experiments in multichain engineering.",
+    images: ["https://bytebeetle-learn.andreyobruchkov1996.chatgpt.site/og-v2.png"],
   },
 };
 
