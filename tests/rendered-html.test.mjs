@@ -30,12 +30,12 @@ test("server-renders the ByteBeetle landing page", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>ByteBeetle — EVM Engineering Education<\/title>/i);
-  assert.match(html, /Understand Ethereum at the level where it actually runs/);
-  assert.match(html, /What you learn to do/);
+  assert.match(html, /Go beyond writing Solidity/);
+  assert.match(html, /After the course, you will be able to/);
   assert.match(html, /EVM Engineering Bootcamp/);
   assert.match(html, /Advanced EVM Bootcamp/);
-  assert.match(html, /Every code example shown in a lesson is maintained as runnable course code/);
-  assert.match(html, /One-to-one mentoring/);
+  assert.match(html, /If code appears in a lesson, it exists on our side, it runs/);
+  assert.match(html, /One-to-one sessions/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
