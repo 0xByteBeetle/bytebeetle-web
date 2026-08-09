@@ -20,8 +20,16 @@ npm run build
 npm test
 ```
 
+The complete Substack index is generated from the public companion repository. After
+updating its catalog, refresh the website copy with:
+
+```bash
+node scripts/sync-substack-catalog.mjs /path/to/blog-solutions/catalog/articles.json
+```
+
 ## Public Destinations
 
 - Website target: [learn.andreyobruchkov.com](https://learn.andreyobruchkov.com)
 - Organization: [github.com/0xByteBeetle](https://github.com/0xByteBeetle)
+- Article companions: [0xByteBeetle/blog-solutions](https://github.com/0xByteBeetle/blog-solutions)
 - Writing: [Substack](https://substack.com/@andreyobruchkov) and [Medium](https://medium.com/@andrey_obruchkov)

@@ -7,7 +7,11 @@ type FormState = "idle" | "submitting" | "success" | "error";
 export default function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
   const [message, setMessage] = useState("");
-  const startedAt = useRef(Date.now());
+  const startedAt = useRef<number | null>(null);
+
+  function markStarted() {
+    startedAt.current ??= Date.now();
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,7 +30,7 @@ export default function ContactForm() {
         discord: formData.get("discord"),
         message: formData.get("message"),
         website: formData.get("website"),
-        startedAt: startedAt.current,
+        startedAt: startedAt.current ?? 0,
       }),
     });
 
@@ -41,13 +45,13 @@ export default function ContactForm() {
     }
 
     form.reset();
-    startedAt.current = Date.now();
+    startedAt.current = null;
     setState("success");
     setMessage("Thank you. Your message is in my inbox, and I will get back to you using the contact details you shared.");
   }
 
   return (
-    <form className="contact-form" onSubmit={submit} noValidate>
+    <form className="contact-form" onFocusCapture={markStarted} onPointerDownCapture={markStarted} onSubmit={submit} noValidate>
       <div className="form-field">
         <label htmlFor="contact-name">Name <span>(optional)</span></label>
         <input id="contact-name" name="name" type="text" autoComplete="name" maxLength={100} />

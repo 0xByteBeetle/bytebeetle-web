@@ -9,16 +9,10 @@ export const metadata: Metadata = {
 
 const ownedResources = [
   {
-    label: "EVM · Go",
-    title: "Transaction Types",
-    description: "Working examples for constructing and signing legacy and modern EVM transactions, including EIP-7702 experiments.",
-    href: "https://github.com/bounty-wiz/TransactionTypes",
-  },
-  {
-    label: "Solana · Anchor",
-    title: "Anchor Solana Accounts",
-    description: "The runnable companion project for accounts, seeds, bumps, PDAs, and client interaction.",
-    href: "https://github.com/bounty-wiz/Anchor-Solana-Accounts",
+    label: "EVM · Solana",
+    title: "Blog Solutions",
+    description: "One checked companion repository mapping all 53 Substack articles to runnable EVM and Solana examples.",
+    href: "https://github.com/0xByteBeetle/blog-solutions",
   },
   {
     label: "Organization",
@@ -50,7 +44,7 @@ export default function ResourcesPage() {
         <div className="library-intro">
           <p className="eyebrow">Runnable companions</p>
           <h2>Code connected to the writing.</h2>
-          <p>These are public projects that support specific technical articles. Course solution repositories remain separate from student material and are not published here.</p>
+          <p>The blog companion is public and organized article by article. Course solutions remain separate from student material and are not published here.</p>
         </div>
         <div className="resource-grid">
           {ownedResources.map((resource) => (

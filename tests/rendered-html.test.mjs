@@ -34,6 +34,8 @@ test("server-renders the 0xByteBeetle landing page", async () => {
   assert.match(html, /What I am exploring/);
   assert.match(html, /Blogs/);
   assert.match(html, /href="\/blogs"/);
+  assert.match(html, /href="\/blogs\/evm"/);
+  assert.match(html, /href="\/blogs\/solana"/);
   assert.match(html, /href="\/bootcamps"/);
   assert.match(html, /href="\/resources"/);
   assert.match(html, /href="\/about"/);
@@ -49,7 +51,9 @@ test("server-renders the 0xByteBeetle landing page", async () => {
 
 test("renders the dedicated public knowledge pages", async () => {
   const expectations = [
-    ["/blogs", /Technical ideas, followed all the way down/],
+    ["/blogs", /Two systems, studied from the inside/],
+    ["/blogs/evm", /Following Ethereum from encoded bytes to protocol behavior/],
+    ["/blogs/solana", /Following accounts, messages, programs, and token extensions/],
     ["/bootcamps", /A course should survive contact with the terminal/],
     ["/bootcamps/evm-engineering", /From protocol mechanics to a working system/],
     ["/bootcamps/advanced-evm", /Advanced token engineering, from ERC-20 to hybrid standards/],
@@ -68,12 +72,15 @@ test("renders the dedicated public knowledge pages", async () => {
 });
 
 test("ships finished project metadata", async () => {
-  const [layout, page, blogs, bootcamps, resources] = await Promise.all([
+  const [layout, page, blogs, evmBlogs, solanaBlogs, bootcamps, resources, catalog] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blogs/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/blogs/evm/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/blogs/solana/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/bootcamps/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/resources/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/substack-articles.generated.ts", import.meta.url), "utf8"),
   ]);
 
   assert.match(layout, /learn\.andreyobruchkov\.com/);
@@ -82,9 +89,15 @@ test("ships finished project metadata", async () => {
   assert.match(layout, /summary_large_image/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
-  assert.match(blogs, /Substack archive/);
+  assert.match(blogs, /37 articles/);
+  assert.match(blogs, /16 articles/);
+  assert.match(evmBlogs, /37 EVM articles/);
+  assert.match(solanaBlogs, /16 Solana articles/);
+  assert.equal((catalog.match(/"solutionHref":/g) ?? []).length, 53);
+  assert.equal((catalog.match(/"chain": "EVM"/g) ?? []).length, 37);
+  assert.equal((catalog.match(/"chain": "Solana"/g) ?? []).length, 16);
   assert.match(bootcamps, /Complete curriculum/);
-  assert.match(resources, /Transaction Types/);
+  assert.match(resources, /Blog Solutions/);
   await access(new URL("../public/andrey-logo.jpeg", import.meta.url));
   await access(new URL("../public/og-v2.png", import.meta.url));
   await access(new URL("../drizzle/0000_contact_submissions.sql", import.meta.url));

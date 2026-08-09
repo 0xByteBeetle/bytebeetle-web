@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { chatGPTSignOutPath, requireChatGPTUser } from "../chatgpt-auth";
 import { isInboxOwner } from "../owner-auth";
 import { listContactSubmissions } from "@/db/contact-submissions";
@@ -57,7 +58,7 @@ export default async function InboxPage() {
           <p>{submissions.length} message{submissions.length === 1 ? "" : "s"} from the last six months</p>
         </div>
         <div className="inbox-actions">
-          <a href="/">View website</a>
+          <Link href="/">View website</Link>
           <a href={chatGPTSignOutPath("/")}>Sign out</a>
         </div>
       </header>
