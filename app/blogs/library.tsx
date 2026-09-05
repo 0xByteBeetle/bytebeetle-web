@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Article } from "../content";
-import { articleTopic, selectArticles, topicOptions, type ChainFilter, type SortOrder } from "./library-model";
+import { selectArticles, topicOptions, type ChainFilter, type SortOrder } from "./library-model";
 
 const PAGE_SIZE = 12;
 const chains = [
@@ -19,9 +19,13 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
   const [query, setQuery] = useState(initialQuery);
   const [topic, setTopic] = useState(topics.some((item) => item.label === initialTopic) ? initialTopic : "");
   const [sort, setSort] = useState<SortOrder>(initialSort === "oldest" || initialSort === "title" ? initialSort : "newest");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [visibleCounts, setVisibleCounts] = useState({ EVM: chain === "all" ? 4 : PAGE_SIZE, Solana: chain === "all" ? 4 : PAGE_SIZE });
+  function resetVisible() { setVisibleCounts({ EVM: chain === "all" ? 4 : PAGE_SIZE, Solana: chain === "all" ? 4 : PAGE_SIZE }); }
   const results = selectArticles(scopedArticles, query, topic, sort);
-  const visible = results.slice(0, visibleCount);
+  const groups = (["EVM", "Solana"] as const).filter((value) => chain === "all" || chain === value).map((value) => ({
+    chain: value,
+    articles: results.filter((article) => article.chain === value),
+  }));
   const filtersActive = Boolean(query || topic);
 
   // A copied URL or refresh restores the current filters, without a history
@@ -37,7 +41,7 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
     window.history.replaceState(window.history.state, "", url);
   }, [query, topic, sort]);
 
-  function clearFilters() { setQuery(""); setTopic(""); setVisibleCount(PAGE_SIZE); }
+  function clearFilters() { setQuery(""); setTopic(""); resetVisible(); }
   function chainHref(href: string) {
     const params = new URLSearchParams();
     if (query) params.set("q", query);
@@ -47,32 +51,39 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
 
   return (
     <section className="blog-library" aria-label="Article library">
-      <nav className="blog-tabs" aria-label="Blog categories">
-        {chains.map((item) => (
-          <a key={item.value} href={chainHref(item.href)} aria-current={chain === item.value ? "page" : undefined}>
-            {item.label}<span>{articles.filter((article) => item.value === "all" || article.chain === item.value).length}</span>
-          </a>
-        ))}
+      <nav className="blog-chain-navigation" aria-label="Blog categories">
+        <div className="blog-chain-choices">
+          {chains.filter((item) => item.value !== "all").map((item) => (
+            <a key={item.value} className={`blog-chain-choice blog-chain-choice-${item.value.toLowerCase()}`} href={chainHref(item.href)} aria-current={chain === item.value ? "page" : undefined}>
+              <strong>{item.label}<span aria-hidden="true">↗</span></strong>
+              <span>{articles.filter((article) => article.chain === item.value).length} articles</span>
+            </a>
+          ))}
+        </div>
+        <a className="blog-all-link" href={chainHref("/blogs")} aria-current={chain === "all" ? "page" : undefined}>All articles <span>{articles.length}</span></a>
       </nav>
       <div className="blog-tools">
         <div className="blog-search">
-          <label htmlFor="article-search">Search articles</label>
+          <label className="blog-sr-only" htmlFor="article-search">Search articles</label>
           <div className="blog-search-field">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg>
-            <input id="article-search" type="search" placeholder="Try calldata, proxies, or Token-2022" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(PAGE_SIZE); }} />
-            {query && <button className="blog-clear-search" type="button" onClick={() => { setQuery(""); setVisibleCount(PAGE_SIZE); }} aria-label="Clear search">×</button>}
+            <input id="article-search" type="search" placeholder={chain === "all" ? "Search all articles…" : `Search ${chain} articles…`} value={query} onChange={(event) => { setQuery(event.target.value); resetVisible(); }} />
+            {query && <button className="blog-clear-search" type="button" onClick={() => { setQuery(""); resetVisible(); }} aria-label="Clear search">×</button>}
           </div>
         </div>
-        <div className="blog-topic-select">
+        <details className="blog-refine" open={topic ? true : undefined}>
+          <summary>{topic ? "Topic selected" : "Filter by topic"}</summary>
+          <div className="blog-topic-select">
           <label htmlFor="article-topic">Topic</label>
-          <select id="article-topic" value={topic} onChange={(event) => { setTopic(event.target.value); setVisibleCount(PAGE_SIZE); }}>
+          <select id="article-topic" value={topic} onChange={(event) => { setTopic(event.target.value); resetVisible(); }}>
             <option value="">All topics</option>
             {topics.map((item) => <option key={item.label} value={item.label}>{item.label} ({item.count})</option>)}
           </select>
-        </div>
+          </div>
+        </details>
         <div className="blog-sort">
-          <label htmlFor="article-sort">Sort by</label>
-          <select id="article-sort" value={sort} onChange={(event) => { setSort(event.target.value as SortOrder); setVisibleCount(PAGE_SIZE); }}>
+          <label className="blog-sr-only" htmlFor="article-sort">Sort by</label>
+          <select id="article-sort" value={sort} onChange={(event) => { setSort(event.target.value as SortOrder); resetVisible(); }}>
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
             <option value="title">Title A–Z</option>
@@ -87,11 +98,18 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
         </div>
       </div>
       {results.length ? (
-        <ul className="blog-results">
-          {visible.map((article) => (
+        <div className={`blog-chain-groups ${chain === "all" ? "blog-chain-groups-both" : ""}`}>
+          {groups.map((group) => (
+            <section key={group.chain} className={`blog-chain-group blog-chain-group-${group.chain.toLowerCase()}`} aria-labelledby={`heading-${group.chain}`}>
+              <header className="blog-group-heading">
+                <h2 id={`heading-${group.chain}`}>{group.chain}</h2>
+                <span>{group.articles.length} {group.articles.length === 1 ? "article" : "articles"}</span>
+              </header>
+              {group.articles.length === 0 && <p className="blog-group-empty">No {group.chain} articles match this search.</p>}
+              <ul className="blog-results">
+          {group.articles.slice(0, visibleCounts[group.chain]).map((article) => (
             <li key={article.href}>
               <article className="blog-entry">
-                <div className="blog-entry-meta"><span>{article.chain}</span><span>{articleTopic(article)}</span></div>
                 <h3><a href={article.href} target="_blank" rel="noreferrer">{article.title}<span className="blog-title-arrow" aria-hidden="true">↗</span><span className="blog-sr-only"> (opens on Substack in a new tab)</span></a></h3>
                 <div className="blog-entry-bottom">
                   <span className="blog-entry-date">{article.date}</span>
@@ -100,7 +118,11 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
               </article>
             </li>
           ))}
-        </ul>
+              </ul>
+              {group.articles.length > visibleCounts[group.chain] && <button type="button" className="blog-group-more" onClick={() => setVisibleCounts((counts) => ({ ...counts, [group.chain]: counts[group.chain] + (chain === "all" ? 4 : PAGE_SIZE) }))}>More {group.chain} articles <span aria-hidden="true">↓</span></button>}
+            </section>
+          ))}
+        </div>
       ) : (
         <div className="blog-empty">
           <h3>No articles found</h3>
@@ -108,10 +130,6 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
           <button type="button" className="button button-primary" onClick={clearFilters}>Show all {chain === "all" ? "" : `${chain} `}articles</button>
         </div>
       )}
-      {results.length > 0 && <div className="blog-pagination">
-        <p>Showing {visible.length} of {results.length} articles</p>
-        {visible.length < results.length && <button type="button" className="button button-secondary" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>Show {Math.min(PAGE_SIZE, results.length - visible.length)} more articles <span aria-hidden="true">↓</span></button>}
-      </div>}
       <noscript><p>Search and filters require JavaScript. Browse the complete archive on <a href="https://andreyobruchkov1996.substack.com/archive">Substack</a>.</p></noscript>
     </section>
   );
