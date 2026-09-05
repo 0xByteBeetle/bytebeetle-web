@@ -51,9 +51,9 @@ test("server-renders the 0xByteBeetle landing page", async () => {
 
 test("renders the dedicated public knowledge pages", async () => {
   const expectations = [
-    ["/blogs", /Two systems, studied from the inside/],
-    ["/blogs/evm", /Following Ethereum from encoded bytes to protocol behavior/],
-    ["/blogs/solana", /Following accounts, messages, programs, and token extensions/],
+    ["/blogs", /Article library/],
+    ["/blogs/evm", /EVM blogs/],
+    ["/blogs/solana", /Solana blogs/],
     ["/bootcamps", /A course should survive contact with the terminal/],
     ["/bootcamps/evm-engineering", /From protocol mechanics to a working system/],
     ["/bootcamps/advanced-evm", /Advanced token engineering, from ERC-20 to hybrid standards/],
@@ -89,10 +89,9 @@ test("ships finished project metadata", async () => {
   assert.match(layout, /summary_large_image/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
-  assert.match(blogs, /37 articles/);
-  assert.match(blogs, /16 articles/);
-  assert.match(evmBlogs, /37 EVM articles/);
-  assert.match(solanaBlogs, /16 Solana articles/);
+  assert.match(blogs, /BlogLibraryPage/);
+  assert.match(evmBlogs, /chain="EVM"/);
+  assert.match(solanaBlogs, /chain="Solana"/);
   assert.equal((catalog.match(/"solutionHref":/g) ?? []).length, 53);
   assert.equal((catalog.match(/"chain": "EVM"/g) ?? []).length, 37);
   assert.equal((catalog.match(/"chain": "Solana"/g) ?? []).length, 16);
@@ -104,4 +103,24 @@ test("ships finished project metadata", async () => {
   await access(new URL("../app/api/contact/route.ts", import.meta.url));
   await access(new URL("../app/inbox/page.tsx", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
+});
+
+test("blog URLs restore searches and keep chain archives scoped", async () => {
+  const scenarios = [
+    ["/blogs?q=borsh", /Borsh/, /UUPS proxy/],
+    ["/blogs/evm?topic=Proxies%20%26%20deployment", /UUPS proxy/, /Zero-Copy/],
+    ["/blogs/solana?q=nonexistent-keyword", /No articles found/, /class="blog-entry"/],
+  ];
+  for (const [pathname, expected, absent] of scenarios) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    // Ignore hydration payloads, which legitimately contain the full catalog.
+    const rendered = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    const results = rendered.slice(rendered.indexOf('aria-label="Article library"'), rendered.indexOf('class="blog-medium"'));
+    assert.match(results, expected, pathname);
+    assert.doesNotMatch(results, absent, pathname);
+    assert.match(results, /id="article-search"/);
+    assert.match(results, /aria-label="Blog categories"/);
+  }
 });

@@ -16,22 +16,9 @@ export function SiteHeader({ active }: { active?: string }) {
       </Link>
 
       <nav className="main-nav" aria-label="Main navigation">
-        <details className="nav-cluster">
-          <summary aria-current={active?.startsWith("blogs") ? "page" : undefined}>
+        <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
-          </summary>
-          <div className="nav-cluster-menu">
-            <a href="/blogs" aria-current={active === "blogs" ? "page" : undefined}>
-              All writing
-            </a>
-            <a href="/blogs/evm" aria-current={active === "blogs-evm" ? "page" : undefined}>
-              EVM
-            </a>
-            <a href="/blogs/solana" aria-current={active === "blogs-solana" ? "page" : undefined}>
-              Solana
-            </a>
-          </div>
-        </details>
+        </a>
         {navigation.map((item) => (
           <a
             href={item.href}
