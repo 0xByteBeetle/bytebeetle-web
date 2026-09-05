@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { advancedCurriculumUrl, advancedWeekOneModules, advancedWeeks } from "../../content";
 import { SiteFooter, SiteHeader } from "../../site-shell";
 
@@ -59,7 +60,7 @@ export default function AdvancedEvmPage() {
         <h2>The advanced course is being built in public, but not rushed.</h2>
         <p>Examples are executed before publication. Screenshots come from real output. Internal implementation references are placed next to the explanation that needs them.</p>
         <div className="profile-links">
-          <a href="/blogs">Read related writing →</a>
+          <Link href="/blogs">Read related writing →</Link>
           <a href="/contact">Ask about the course →</a>
         </div>
       </section>

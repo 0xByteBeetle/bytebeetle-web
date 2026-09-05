@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { substackArticles } from "./content";
+import { chainOptions } from "./blogs/library-model";
 
 const navigation = [
   { href: "/bootcamps", label: "Bootcamps", key: "bootcamps" },
@@ -16,9 +18,9 @@ export function SiteHeader({ active }: { active?: string }) {
       </Link>
 
       <nav className="main-nav" aria-label="Main navigation">
-        <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
+        <Link href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
-        </a>
+        </Link>
         {navigation.map((item) => (
           <a
             href={item.href}
@@ -37,15 +39,14 @@ export function SiteHeader({ active }: { active?: string }) {
       <details className="mobile-menu">
         <summary>Menu</summary>
         <nav aria-label="Mobile navigation">
-          <a href="/blogs" aria-current={active === "blogs" ? "page" : undefined}>
+          <Link href="/blogs" aria-current={active === "blogs" ? "page" : undefined}>
             Blogs
-          </a>
-          <a className="mobile-subitem" href="/blogs/evm" aria-current={active === "blogs-evm" ? "page" : undefined}>
-            EVM writing
-          </a>
-          <a className="mobile-subitem" href="/blogs/solana" aria-current={active === "blogs-solana" ? "page" : undefined}>
-            Solana writing
-          </a>
+          </Link>
+          {chainOptions(substackArticles).map((chain) => (
+            <Link key={chain.slug} className="mobile-subitem" href={`/blogs/${chain.slug}`} aria-current={active === `blogs-${chain.slug}` ? "page" : undefined}>
+              {chain.label} writing
+            </Link>
+          ))}
           {navigation.map((item) => (
             <a href={item.href} key={item.key} aria-current={active === item.key ? "page" : undefined}>
               {item.label}

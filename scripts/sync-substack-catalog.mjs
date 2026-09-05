@@ -22,7 +22,11 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 });
 
 const output = articles.map((article) => {
-  const chain = article.chain === "evm" ? "EVM" : "Solana";
+  if (typeof article.chain !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.chain) || article.chain === "all") {
+    throw new Error(`Invalid chain identifier for ${article.title}`);
+  }
+  const knownLabels = { evm: "EVM", solana: "Solana" };
+  const chain = knownLabels[article.chain] ?? article.chain.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
   const isToken2022 =
     chain === "Solana" &&
     /token-2022|spl token|token metadata|interest-bearing|transfer hook|fee-on-transfer|confidential transfer|metadata pointer/i.test(
@@ -33,24 +37,17 @@ const output = articles.map((article) => {
     title: article.title,
     href: article.url,
     date: formatter.format(new Date(article.publishedAt)),
-    topic: isToken2022 ? "Token-2022" : chain,
+    topic: article.topic || (isToken2022 ? "Token-2022" : chain),
     chain,
     slug: article.slug,
     solutionHref: `https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/${article.chain}/${article.slug}`,
   };
 });
 
-const evmCount = output.filter((article) => article.chain === "EVM").length;
-const solanaCount = output.filter((article) => article.chain === "Solana").length;
-
-if (output.length !== 53 || evmCount !== 37 || solanaCount !== 16) {
-  throw new Error(
-    `Unexpected catalog shape: ${output.length} total, ${evmCount} EVM, ${solanaCount} Solana.`,
-  );
-}
+if (new Set(output.map((article) => article.href)).size !== output.length) throw new Error("The catalog contains duplicate article URLs.");
 
 const generated = `// Generated from 0xByteBeetle/blog-solutions/catalog/articles.json.\n// Run scripts/sync-substack-catalog.mjs to refresh it.\n\nimport type { Article } from "./content";\n\nexport const substackArticles: Article[] = ${JSON.stringify(output, null, 2)};\n`;
 
 await writeFile(resolve("app/substack-articles.generated.ts"), generated);
 
-console.log(`Synced ${output.length} Substack articles (${evmCount} EVM, ${solanaCount} Solana).`);
+console.log(`Synced ${output.length} Substack articles across ${new Set(output.map((article) => article.chain)).size} chains.`);

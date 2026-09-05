@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { articleTopic, selectArticles, topicOptions } from "../app/blogs/library-model.ts";
+import { chainOptions, paginateArticles, articleTopic, selectArticles, topicOptions } from "../app/blogs/library-model.ts";
 
 const source = await readFile(new URL("../app/substack-articles.generated.ts", import.meta.url), "utf8");
 const catalog = JSON.parse(source.slice(source.indexOf("= [") + 2).trim().replace(/;$/, ""));
@@ -44,4 +44,23 @@ test("topics distinguish Solana fundamentals from extensions and execution from 
   assert.equal(topic("Confidential Transfers"), "Tokens & extensions");
   assert.equal(topic("UUPS"), "Proxies & deployment");
   assert.equal(topic("SignTypedData"), "Signatures");
+});
+
+test("new chains appear from catalog data and do not inherit EVM topics", () => {
+  const additional = { title: "Object ownership", chain: "Sui", topic: "Objects", href: "https://example.com/sui", date: "September 2026" };
+  const options = chainOptions([...catalog, additional]);
+  assert.deepEqual(options.find((item) => item.label === "Sui"), { label: "Sui", slug: "sui", count: 1 });
+  assert.equal(articleTopic(additional), "Objects");
+  assert.equal(selectArticles([...catalog, additional], "Sui", "", "newest")[0], additional);
+});
+
+test("pagination reaches every article without overlap and clamps invalid pages", () => {
+  const visited = [];
+  const { pages } = paginateArticles(catalog, 1);
+  for (let page = 1; page <= pages; page++) visited.push(...paginateArticles(catalog, page).articles);
+  assert.deepEqual(visited, catalog);
+  assert.equal(paginateArticles(catalog, 9999).page, pages);
+  assert.equal(paginateArticles(catalog, -1).page, 1);
+  assert.equal(paginateArticles(catalog, Infinity).page, 1);
+  assert.deepEqual(paginateArticles([], 99), { page: 1, pages: 1, articles: [] });
 });

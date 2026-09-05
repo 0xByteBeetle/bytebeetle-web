@@ -76,8 +76,8 @@ test("ships finished project metadata", async () => {
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blogs/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/blogs/evm/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/blogs/solana/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/blogs/[chain]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/blogs/[chain]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/bootcamps/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/resources/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/substack-articles.generated.ts", import.meta.url), "utf8"),
@@ -90,11 +90,12 @@ test("ships finished project metadata", async () => {
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
   assert.doesNotMatch(page, /SkeletonPreview|_sites-preview/);
   assert.match(blogs, /BlogLibraryPage/);
-  assert.match(evmBlogs, /chain="EVM"/);
-  assert.match(solanaBlogs, /chain="Solana"/);
-  assert.equal((catalog.match(/"solutionHref":/g) ?? []).length, 53);
-  assert.equal((catalog.match(/"chain": "EVM"/g) ?? []).length, 37);
-  assert.equal((catalog.match(/"chain": "Solana"/g) ?? []).length, 16);
+  assert.match(evmBlogs, /chainOptions/);
+  assert.match(solanaBlogs, /chain=\{chain.label\}/);
+  const articleCount = (catalog.match(/"href":/g) ?? []).length;
+  assert.ok(articleCount > 0);
+  assert.equal((catalog.match(/"solutionHref":/g) ?? []).length, articleCount);
+  assert.equal((catalog.match(/"chain":/g) ?? []).length, articleCount);
   assert.match(bootcamps, /Complete curriculum/);
   assert.match(resources, /Blog Solutions/);
   await access(new URL("../public/andrey-logo.jpeg", import.meta.url));
@@ -103,6 +104,22 @@ test("ships finished project metadata", async () => {
   await access(new URL("../app/api/contact/route.ts", import.meta.url));
   await access(new URL("../app/inbox/page.tsx", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
+});
+
+test("blog pagination restores the requested page and rejects unknown chains", async () => {
+  const pages = [];
+  for (const path of ["/blogs", "/blogs?page=2"]) {
+    const response = await render(path);
+    assert.equal(response.status, 200);
+    const html = (await response.text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    const list = html.match(/<ul class="blog-results">([\s\S]*?)<\/ul>/)?.[1];
+    assert.ok(list);
+    assert.equal((list.match(/class="blog-entry"/g) ?? []).length, 12);
+    pages.push([...list.matchAll(/<h3><a href="([^"]+)"/g)].map((match) => match[1]));
+  }
+  assert.equal(pages[0].length, 12);
+  assert.equal(new Set(pages.flat()).size, 24);
+  assert.equal((await render("/blogs/not-a-published-chain")).status, 404);
 });
 
 test("blog URLs restore searches and keep chain archives scoped", async () => {

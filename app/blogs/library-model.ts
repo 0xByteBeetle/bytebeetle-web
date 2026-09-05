@@ -3,9 +3,24 @@ import type { Article } from "../content";
 export type ChainFilter = "all" | Article["chain"];
 export type SortOrder = "newest" | "oldest" | "title";
 
+export function chainOptions(articles: Article[]) {
+  return [...new Set(articles.map((article) => article.chain))].sort().map((label) => ({
+    label,
+    slug: label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+    count: articles.filter((article) => article.chain === label).length,
+  }));
+}
+
+export function paginateArticles(articles: Article[], requestedPage: number, pageSize = 12) {
+  const pages = Math.max(1, Math.ceil(articles.length / pageSize));
+  const page = Math.min(pages, Math.max(1, Number.isFinite(requestedPage) ? Math.trunc(requestedPage) : 1));
+  return { page, pages, articles: articles.slice((page - 1) * pageSize, page * pageSize) };
+}
+
 // Labels describe the subjects named in the original article titles.
 export function articleTopic(article: Article): string {
   const title = article.title.toLowerCase();
+  if (article.chain !== "EVM" && article.chain !== "Solana") return article.topic || article.chain;
   if (article.chain === "Solana") {
     if (/token|metadata|native zk/.test(title)) return "Tokens & extensions";
     if (/borsh|zero-copy/.test(title)) return "Serialization & memory";

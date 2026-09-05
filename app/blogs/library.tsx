@@ -1,31 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Article } from "../content";
-import { selectArticles, topicOptions, type ChainFilter, type SortOrder } from "./library-model";
+import { chainOptions, paginateArticles, selectArticles, topicOptions, type ChainFilter, type SortOrder } from "./library-model";
 
 const PAGE_SIZE = 12;
-const chains = [
-  { label: "All articles", value: "all", href: "/blogs" },
-  { label: "EVM", value: "EVM", href: "/blogs/evm" },
-  { label: "Solana", value: "Solana", href: "/blogs/solana" },
-] as const;
-
-export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initialSort }: {
-  articles: Article[]; chain: ChainFilter; initialQuery: string; initialTopic: string; initialSort: string;
+export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initialSort, initialPage }: {
+  articles: Article[]; chain: ChainFilter; initialQuery: string; initialTopic: string; initialSort: string; initialPage: number;
 }) {
+  const chains = chainOptions(articles);
+  const activeChainLink = useRef<HTMLAnchorElement>(null);
+  const resultsHeading = useRef<HTMLHeadingElement>(null);
   const scopedArticles = articles.filter((article) => chain === "all" || article.chain === chain);
   const topics = topicOptions(scopedArticles);
   const [query, setQuery] = useState(initialQuery);
   const [topic, setTopic] = useState(topics.some((item) => item.label === initialTopic) ? initialTopic : "");
   const [sort, setSort] = useState<SortOrder>(initialSort === "oldest" || initialSort === "title" ? initialSort : "newest");
-  const [visibleCounts, setVisibleCounts] = useState({ EVM: chain === "all" ? 4 : PAGE_SIZE, Solana: chain === "all" ? 4 : PAGE_SIZE });
-  function resetVisible() { setVisibleCounts({ EVM: chain === "all" ? 4 : PAGE_SIZE, Solana: chain === "all" ? 4 : PAGE_SIZE }); }
+  const [requestedPage, setRequestedPage] = useState(initialPage);
+  function resetVisible() { setRequestedPage(1); }
   const results = selectArticles(scopedArticles, query, topic, sort);
-  const groups = (["EVM", "Solana"] as const).filter((value) => chain === "all" || chain === value).map((value) => ({
-    chain: value,
-    articles: results.filter((article) => article.chain === value),
-  }));
+  const pagination = paginateArticles(results, requestedPage, PAGE_SIZE);
   const filtersActive = Boolean(query || topic);
 
   // A copied URL or refresh restores the current filters, without a history
@@ -38,8 +32,22 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
     else url.searchParams.delete("topic");
     if (sort !== "newest") url.searchParams.set("sort", sort);
     else url.searchParams.delete("sort");
+    if (pagination.page > 1) url.searchParams.set("page", String(pagination.page));
+    else url.searchParams.delete("page");
     window.history.replaceState(window.history.state, "", url);
-  }, [query, topic, sort]);
+  }, [query, topic, sort, pagination.page]);
+
+  useEffect(() => {
+    // Keep the selected tab visible when the category row overflows.
+    const link = activeChainLink.current;
+    if (link?.parentElement) link.parentElement.scrollLeft = Math.max(0, link.offsetLeft - link.parentElement.offsetLeft - 16);
+  }, [chain]);
+
+  function goToPage(page: number) {
+    setRequestedPage(page);
+    resultsHeading.current?.focus({ preventScroll: true });
+    resultsHeading.current?.scrollIntoView({ block: "start", behavior: "instant" });
+  }
 
   function clearFilters() { setQuery(""); setTopic(""); resetVisible(); }
   function chainHref(href: string) {
@@ -52,15 +60,11 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
   return (
     <section className="blog-library" aria-label="Article library">
       <nav className="blog-chain-navigation" aria-label="Blog categories">
-        <div className="blog-chain-choices">
-          {chains.filter((item) => item.value !== "all").map((item) => (
-            <a key={item.value} className={`blog-chain-choice blog-chain-choice-${item.value.toLowerCase()}`} href={chainHref(item.href)} aria-current={chain === item.value ? "page" : undefined}>
-              <strong>{item.label}<span aria-hidden="true">↗</span></strong>
-              <span>{articles.filter((article) => article.chain === item.value).length} articles</span>
-            </a>
-          ))}
+        <span className="blog-chain-label">Explore by chain</span>
+        <div className="blog-chain-tabs">
+          <a href={chainHref("/blogs")} ref={chain === "all" ? activeChainLink : undefined} aria-current={chain === "all" ? "page" : undefined}>All articles <span>{articles.length}</span></a>
+          {chains.map((item) => <a key={item.slug} ref={chain === item.label ? activeChainLink : undefined} href={chainHref(`/blogs/${item.slug}`)} aria-current={chain === item.label ? "page" : undefined}>{item.label}<span>{item.count}</span></a>)}
         </div>
-        <a className="blog-all-link" href={chainHref("/blogs")} aria-current={chain === "all" ? "page" : undefined}>All articles <span>{articles.length}</span></a>
       </nav>
       <div className="blog-tools">
         <div className="blog-search">
@@ -91,38 +95,29 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
         </div>
       </div>
       <div className="blog-results-heading">
-        <h2>{topic || (query ? "Search results" : "All articles")}</h2>
+        <h2 ref={resultsHeading} tabIndex={-1}>{topic || (query ? "Search results" : chain === "all" ? "All articles" : `${chain} articles`)}</h2>
         <div className="blog-result-status">
           <span role="status" aria-live="polite">{results.length} {results.length === 1 ? "article" : "articles"}{query && ` matching “${query}”`}</span>
           {filtersActive && <button type="button" onClick={clearFilters}>Clear filters</button>}
         </div>
       </div>
       {results.length ? (
-        <div className={`blog-chain-groups ${chain === "all" ? "blog-chain-groups-both" : ""}`}>
-          {groups.map((group) => (
-            <section key={group.chain} className={`blog-chain-group blog-chain-group-${group.chain.toLowerCase()}`} aria-labelledby={`heading-${group.chain}`}>
-              <header className="blog-group-heading">
-                <h2 id={`heading-${group.chain}`}>{group.chain}</h2>
-                <span>{group.articles.length} {group.articles.length === 1 ? "article" : "articles"}</span>
-              </header>
-              {group.articles.length === 0 && <p className="blog-group-empty">No {group.chain} articles match this search.</p>}
-              <ul className="blog-results">
-          {group.articles.slice(0, visibleCounts[group.chain]).map((article) => (
+        <ul className="blog-results">
+          {pagination.articles.map((article) => (
             <li key={article.href}>
               <article className="blog-entry">
+                <span className="blog-chain-badge">{article.chain}</span>
+                <div className="blog-entry-copy">
                 <h3><a href={article.href} target="_blank" rel="noreferrer">{article.title}<span className="blog-title-arrow" aria-hidden="true">↗</span><span className="blog-sr-only"> (opens on Substack in a new tab)</span></a></h3>
                 <div className="blog-entry-bottom">
                   <span className="blog-entry-date">{article.date}</span>
                   {article.solutionHref && <a className="blog-code-link" href={article.solutionHref} target="_blank" rel="noreferrer" aria-label={`View example code for ${article.title} on GitHub (opens in a new tab)`}><span aria-hidden="true">&lt;/&gt;</span> Example code <span aria-hidden="true">↗</span></a>}
                 </div>
+                </div>
               </article>
             </li>
           ))}
-              </ul>
-              {group.articles.length > visibleCounts[group.chain] && <button type="button" className="blog-group-more" onClick={() => setVisibleCounts((counts) => ({ ...counts, [group.chain]: counts[group.chain] + (chain === "all" ? 4 : PAGE_SIZE) }))}>More {group.chain} articles <span aria-hidden="true">↓</span></button>}
-            </section>
-          ))}
-        </div>
+        </ul>
       ) : (
         <div className="blog-empty">
           <h3>No articles found</h3>
@@ -130,6 +125,11 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
           <button type="button" className="button button-primary" onClick={clearFilters}>Show all {chain === "all" ? "" : `${chain} `}articles</button>
         </div>
       )}
+      {results.length > 0 && <nav className="blog-page-controls" aria-label="Article pages">
+        <button type="button" disabled={pagination.page === 1} onClick={() => goToPage(pagination.page - 1)}>← Previous</button>
+        <span aria-live="polite">Page {pagination.page} of {pagination.pages}</span>
+        <button type="button" disabled={pagination.page === pagination.pages} onClick={() => goToPage(pagination.page + 1)}>Next →</button>
+      </nav>}
       <noscript><p>Search and filters require JavaScript. Browse the complete archive on <a href="https://andreyobruchkov1996.substack.com/archive">Substack</a>.</p></noscript>
     </section>
   );

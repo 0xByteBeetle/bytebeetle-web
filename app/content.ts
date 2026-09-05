@@ -4,8 +4,8 @@ export type Article = {
   title: string;
   href: string;
   date: string;
-  topic: "EVM" | "Solana" | "Token-2022";
-  chain: "EVM" | "Solana";
+  topic: string;
+  chain: string;
   slug?: string;
   solutionHref?: string;
 };

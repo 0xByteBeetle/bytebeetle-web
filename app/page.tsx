@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ContactForm from "./contact-form";
 import { substackArticles } from "./content";
 import { SiteFooter, SiteHeader } from "./site-shell";
@@ -36,7 +37,7 @@ export default function Home() {
             extends into Solana, and the work will continue across chains.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="/blogs">Read the blogs</a>
+            <Link className="button button-primary" href="/blogs">Read the blogs</Link>
             <a className="button button-secondary" href="/bootcamps">Explore the bootcamps</a>
           </div>
         </div>
@@ -59,7 +60,7 @@ export default function Home() {
             <h2>Ideas I am working through in public.</h2>
             <p>Long-form explanations built from source code, real executions, and the questions that appear while building systems.</p>
           </div>
-          <a className="text-link" href="/blogs">Browse all blogs →</a>
+          <Link className="text-link" href="/blogs">Browse all blogs →</Link>
         </div>
 
         <div className="article-preview-grid">
