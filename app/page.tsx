@@ -1,4 +1,4 @@
-import { SiteHeader } from "./site-shell";
+import { SiteHeader, SiteFooter } from "./site-shell";
 import "./home.css";
 
 export default function Home() {
@@ -50,6 +50,6 @@ export default function Home() {
       <h2 id="about-title">Hi, I’m Andrey.</h2>
       <div><p>I’m a blockchain engineer and protocol builder. This is where I share the explanations, experiments, and questions that come out of my work.</p><div className="actions"><a href="/about">More about me →</a><a href="/contact">Get in touch →</a></div></div>
     </section>
-  </main><footer className="wrap"><span>0xByteBeetle · Andrey Obruchkov</span><div><a href="https://andreyobruchkov1996.substack.com" target="_blank" rel="noopener noreferrer">Substack ↗</a><a href="https://github.com/0xByteBeetle" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/contact">Contact</a><a href="/inbox">Owner inbox</a></div></footer></div>
+  </main><SiteFooter /></div>
   );
 }

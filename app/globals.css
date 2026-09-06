@@ -1,13 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #20201e;
-  --muted: #696761;
-  --paper: #f5f2eb;
-  --white: #fffdf8;
-  --soft: #e9e5dc;
-  --dark: #262623;
-  --accent: #927f65;
+  --ink: #242523;
+  --muted: #63645e;
+  --paper: #f7f5f0;
+  --white: #fffefa;
+  --soft: #eeeee7;
+  --dark: #242523;
+  --accent: #656653;
+  --border: #d9dad2;
+  --font-editorial-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-editorial-serif: Georgia, "Times New Roman", serif;
+  --page-width: min(1120px, calc(100% - 96px));
+  --page-inset: max(48px, calc((100vw - 1120px) / 2));
   --danger: #8f3f32;
 }
 

@@ -11,7 +11,6 @@ export function SiteHeader({ active }: { active?: string }) {
   return (
     <header className="site-header">
       <Link className="brand" href="/" aria-label="0xByteBeetle home">
-        <span className="brand-mark" aria-hidden="true">0x</span>
         <span>0xByteBeetle</span>
       </Link>
 
@@ -31,15 +30,11 @@ export function SiteHeader({ active }: { active?: string }) {
         ))}
       </nav>
 
-      <a className="header-action" href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">
-        GitHub ↗
-      </a>
-
       <details className="mobile-menu">
         <summary>Menu</summary>
         <nav aria-label="Mobile navigation">
           <a href="/" aria-current={active === "home" ? "page" : undefined}>Home</a>
-          <a href="/blogs" aria-current={active === "blogs" ? "page" : undefined}>
+          <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
           </a>
           <a className="mobile-subitem" href="/blogs/evm" aria-current={active === "blogs-evm" ? "page" : undefined}>
@@ -61,13 +56,14 @@ export function SiteHeader({ active }: { active?: string }) {
 
 export function SiteFooter() {
   return (
-    <footer>
-      <Link className="brand" href="/" aria-label="0xByteBeetle home">
-        <span className="brand-mark" aria-hidden="true">0x</span>
-        <span>0xByteBeetle</span>
-      </Link>
-      <p>Multichain engineering notes and education.</p>
-      <a className="owner-link" href="/inbox">Owner inbox</a>
+    <footer className="site-footer">
+      <Link href="/">0xByteBeetle · Andrey Obruchkov</Link>
+      <div className="footer-links">
+        <a href="https://andreyobruchkov1996.substack.com" target="_blank" rel="noreferrer">Substack ↗</a>
+        <a href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a href="/contact">Contact</a>
+        <a href="/inbox">Owner inbox</a>
+      </div>
     </footer>
   );
 }

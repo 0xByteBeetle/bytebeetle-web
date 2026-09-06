@@ -157,3 +157,53 @@ test("blog URLs restore searches and keep chain archives scoped", async () => {
     assert.match(results, /aria-label="Blog categories"/);
   }
 });
+
+test("all public pages share the editorial header, navigation and footer", async () => {
+  const routes = ["/", "/blogs", "/blogs/evm", "/blogs/solana", "/bootcamps", "/bootcamps/evm-engineering", "/bootcamps/advanced-evm", "/resources", "/about", "/contact", "/privacy"];
+  let referenceFooter;
+  for (const pathname of routes) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200, pathname);
+    const html = (await response.text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    assert.match(html, /<body class="site-design\b/, pathname);
+    assert.equal((html.match(/class="site-header"/g) ?? []).length, 1, pathname);
+    const desktop = html.match(/<nav\b[^>]*aria-label="Main navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+    assert.ok(desktop, pathname);
+    const links = [...desktop.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)]
+      .map((match) => [match[1], match[2].trim()]);
+    assert.deepEqual(links, [["/", "Home"], ["/blogs", "Blogs"], ["/bootcamps", "Bootcamps"], ["/resources", "Resources"], ["/about", "About"], ["/contact", "Contact"]], pathname);
+    const footer = html.match(/<footer class="site-footer">[\s\S]*?<\/footer>/)?.[0];
+    assert.ok(footer, pathname);
+    referenceFooter ??= footer;
+    assert.equal(footer, referenceFooter, pathname);
+    assert.match(footer, /href="\/inbox"/, pathname);
+    assert.doesNotMatch(html, /class="brand-mark"|class="header-action"/, pathname);
+  }
+});
+
+test("contact and curricula retain their controls after the visual update", async () => {
+  const contact = await (await render("/contact")).text();
+  for (const name of ["name", "email", "telegram", "discord", "message", "website"]) {
+    assert.match(contact, new RegExp(`name="${name}"`));
+  }
+  assert.match(contact, /type="submit"/);
+  assert.match(contact, /href="\/privacy"/);
+  for (const [route, id] of [["/bootcamps/evm-engineering", "1GowdQgZ0wf510Kt9NuNKI1086jfdWHdaIRoM55b-Wzg"], ["/bootcamps/advanced-evm", "1tjLyXuMbwjgzDwafG_9aRbQ3Q1q-JhAwTPg_yeJBCbw"]]) {
+    const html = await (await render(route)).text();
+    assert.ok(html.includes(`https://docs.google.com/document/d/${id}/edit`), route);
+    assert.match(html, /class="curriculum-list"/, route);
+  }
+});
+
+test("the shared theme owns the shell and includes responsive page and form layouts", async () => {
+  const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/design.css", import.meta.url), "utf8");
+  const homeCss = await readFile(new URL("../app/home.css", import.meta.url), "utf8");
+  assert.match(layout, /import "\.\/design.css"/);
+  assert.match(css, /@media\(max-width:760px\)/);
+  assert.match(css, /\.site-design \.site-header/);
+  assert.match(css, /\.site-design \.site-footer/);
+  assert.match(css, /\.site-design \.contact-methods \{ grid-template-columns: 1fr; \}/);
+  assert.match(css, /\.site-design \.form-message.error/);
+  assert.doesNotMatch(homeCss, /\.site-header|\.mobile-menu|\.editorial-home footer/);
+});
