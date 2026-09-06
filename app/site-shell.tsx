@@ -16,6 +16,7 @@ export function SiteHeader({ active }: { active?: string }) {
       </Link>
 
       <nav className="main-nav" aria-label="Main navigation">
+        <a href="/" aria-current={active === "home" ? "page" : undefined}>Home</a>
         <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
         </a>
@@ -37,6 +38,7 @@ export function SiteHeader({ active }: { active?: string }) {
       <details className="mobile-menu">
         <summary>Menu</summary>
         <nav aria-label="Mobile navigation">
+          <a href="/" aria-current={active === "home" ? "page" : undefined}>Home</a>
           <a href="/blogs" aria-current={active === "blogs" ? "page" : undefined}>
             Blogs
           </a>

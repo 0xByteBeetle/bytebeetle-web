@@ -1,134 +1,55 @@
-import ContactForm from "./contact-form";
-import { substackArticles } from "./content";
-import { SiteFooter, SiteHeader } from "./site-shell";
-
-const bootcamps = [
-  {
-    label: "Complete foundation",
-    title: "EVM Engineering Bootcamp",
-    href: "/bootcamps/evm-engineering",
-    description:
-      "A complete foundation in execution, calldata, transactions, signing, observability, tokens, testing, and protocol development.",
-    note: "A six-week path with runnable Foundry labs",
-  },
-  {
-    label: "In development",
-    title: "Advanced EVM Bootcamp",
-    href: "/bootcamps/advanced-evm",
-    description:
-      "A deeper study of token internals, typed signatures, permit flows, storage, gas behavior, integration risk, and adversarial testing.",
-    note: "Long-form modules with verified reference projects",
-  },
-];
+import { SiteHeader } from "./site-shell";
+import "./home.css";
 
 export default function Home() {
   return (
-    <main id="top">
-      <SiteHeader />
-
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">By Andrey Obruchkov</p>
-          <h1>Notes, bootcamps, and practical experiments in multichain engineering.</h1>
-          <p className="hero-lede">
-            I use 0xByteBeetle to take blockchain systems apart and explain how they
-            behave. The first learning track is focused on the EVM. The writing already
-            extends into Solana, and the work will continue across chains.
-          </p>
-          <div className="hero-actions">
-            <a className="button button-primary" href="/blogs">Read the blogs</a>
-            <a className="button button-secondary" href="/bootcamps">Explore the bootcamps</a>
-          </div>
+<div className="editorial-home"><a className="skip" href="#content">Skip to content</a><SiteHeader active="home" /><main id="content">
+    <section className="intro wrap" aria-labelledby="intro-title">
+      <p className="byline">Notes by Andrey Obruchkov</p>
+      <h1 id="intro-title">Understanding blockchain,<br />beneath the surface.</h1>
+      <p className="intro-copy">I explore how blockchain systems work, from EVM execution to Solana’s account model. Here you’ll find deep dives, practical examples, and bootcamps for building a deeper understanding.</p>
+      <div className="actions">
+        <a className="primary" href="/blogs">Explore the articles <span aria-hidden="true">↗</span></a>
+        <a className="secondary" href="/bootcamps">Browse bootcamps <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+    <section className="writing wrap" aria-labelledby="writing-title">
+      <div className="section-top"><h2 id="writing-title">A few places to begin</h2><a href="/blogs">All articles <span aria-hidden="true">→</span></a></div>
+      <div className="article-grid">
+        <article>
+          <div className="metadata">EVM <span>Contract creation</span></div>
+          <h3><a href="https://andreyobruchkov1996.substack.com/p/factories-how-smart-contracts-deploy" target="_blank" rel="noopener noreferrer">Factories - How Smart Contracts Deploy Other Contracts</a></h3>
+          <p>What happens when the thing deploying a smart contract is another smart contract?</p>
+          <div className="article-links"><a href="https://andreyobruchkov1996.substack.com/p/factories-how-smart-contracts-deploy" target="_blank" rel="noopener noreferrer">Read article ↗</a><a href="https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/evm/factories-how-smart-contracts-deploy" target="_blank" rel="noopener noreferrer">Example code ↗</a></div>
+        </article>
+        <article>
+          <div className="metadata">Solana <span>Accounts</span></div>
+          <h3><a href="https://andreyobruchkov1996.substack.com/p/understanding-solana-account-model" target="_blank" rel="noopener noreferrer">Understanding Solana: Account Model - part 2</a></h3>
+          <p>What is a Solana account, and how does the account model shape the way programs work?</p>
+          <div className="article-links"><a href="https://andreyobruchkov1996.substack.com/p/understanding-solana-account-model" target="_blank" rel="noopener noreferrer">Read article ↗</a><a href="https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/understanding-solana-account-model" target="_blank" rel="noopener noreferrer">Example code ↗</a></div>
+        </article>
+        <article>
+          <div className="metadata">Solana <span>Serialization</span></div>
+          <h3><a href="https://andreyobruchkov1996.substack.com/p/solana-deep-dive-unpacking-borsh" target="_blank" rel="noopener noreferrer">Solana Deep Dive: Unpacking Borsh Serialization Under the Hood</a></h3>
+          <p>How does structured data become a sequence of bytes that a program can read?</p>
+          <div className="article-links"><a href="https://andreyobruchkov1996.substack.com/p/solana-deep-dive-unpacking-borsh" target="_blank" rel="noopener noreferrer">Read article ↗</a><a href="https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/solana-deep-dive-unpacking-borsh" target="_blank" rel="noopener noreferrer">Example code ↗</a></div>
+        </article>
+      </div>
+      <p className="browse"><span>Explore by ecosystem</span><a href="/blogs/evm">EVM →</a><a href="/blogs/solana">Solana →</a></p>
+    </section>
+    <section className="study" aria-labelledby="study-title">
+      <div className="wrap">
+        <div className="study-intro"><h2 id="study-title">Prefer a structured path?</h2><p>The bootcamps connect the explanations with exercises. Start with the foundations, then work through the details.</p><a href="/bootcamps">Explore the bootcamps →</a></div>
+        <div>
+          <div className="course"><h3><a href="/bootcamps/evm-engineering">EVM Engineering Bootcamp</a></h3><p>For learning how Ethereum works through hands-on study: execution, transactions, smart contracts, and on-chain activity.</p><a href="/bootcamps/evm-engineering">View curriculum and prerequisites →</a></div>
+          <div className="course"><span className="status">In development</span><h3><a href="/bootcamps/advanced-evm">Advanced EVM Bootcamp</a></h3><p>For those comfortable with Solidity who want to go deeper into token behavior, contract architecture, and security.</p><a href="/bootcamps/advanced-evm">Explore the planned curriculum →</a></div>
         </div>
-
-        <aside className="focus-card" aria-label="Topics covered by 0xByteBeetle">
-          <p className="focus-heading">What I am exploring</p>
-          <ul>
-            <li>EVM execution, storage, and transaction behavior</li>
-            <li>Solana programs, accounts, tokens, and runtime mechanics</li>
-            <li>Cross-chain systems and integration assumptions</li>
-            <li>Infrastructure, Go, Rust, and engineering practice</li>
-          </ul>
-        </aside>
-      </section>
-
-      <section className="writing-section" id="writing">
-        <div className="section-heading compact-heading section-heading-row">
-          <div>
-            <p className="eyebrow">Blogs</p>
-            <h2>Ideas I am working through in public.</h2>
-            <p>Long-form explanations built from source code, real executions, and the questions that appear while building systems.</p>
-          </div>
-          <a className="text-link" href="/blogs">Browse all blogs →</a>
-        </div>
-
-        <div className="article-preview-grid">
-          {substackArticles.slice(0, 3).map((article) => (
-            <a className="article-preview" href={article.href} target="_blank" rel="noreferrer" key={article.href}>
-              <div className="article-meta"><span>{article.topic}</span><span>{article.date}</span></div>
-              <h3>{article.title}</h3>
-              <span className="text-link">Read article ↗</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className="bootcamps-section" id="bootcamps">
-        <div className="section-heading section-heading-row">
-          <div>
-            <p className="eyebrow">Bootcamps</p>
-            <h2>The EVM is the first learning track.</h2>
-            <p>Each module combines a careful explanation, code you can run, and questions that make you check whether you understand the mechanism.</p>
-          </div>
-          <a className="text-link" href="/bootcamps">See curricula and format →</a>
-        </div>
-
-        <div className="bootcamp-grid">
-          {bootcamps.map((bootcamp) => (
-            <a className="bootcamp-card linked-card" href={bootcamp.href} key={bootcamp.title}>
-              <p className="platform-label">{bootcamp.label}</p>
-              <h3>{bootcamp.title}</h3>
-              <p>{bootcamp.description}</p>
-              <p className="bootcamp-note">{bootcamp.note}</p>
-              <span className="text-link">Explore this bootcamp →</span>
-            </a>
-          ))}
-        </div>
-
-        <div className="teaching-note">
-          <p className="eyebrow">The course rule</p>
-          <blockquote>“If code appears in a lesson, it exists on our side, it runs, and its output has been inspected.”</blockquote>
-          <p>Technical questions test the explanation. Hands-on questions test whether you can use it. Solutions and reference projects stay separate from the student material.</p>
-          <a href="/resources">Explore the public resources →</a>
-        </div>
-      </section>
-
-      <section className="about-contact" id="about">
-        <div className="about-copy">
-          <p className="eyebrow">About</p>
-          <h2>I build systems and teach what I learn from them.</h2>
-          <p>
-            I am Andrey Obruchkov, a blockchain engineer and protocol builder working
-            across smart contracts, multichain systems, infrastructure, Go, and Rust.
-            0xByteBeetle is where I collect the explanations, examples, and learning
-            material that come out of that work.
-          </p>
-          <div className="profile-links">
-            <a href="/about">Read more about the work →</a>
-            <a href="/resources">Browse resources →</a>
-          </div>
-        </div>
-
-        <div className="contact-panel" id="contact">
-          <p className="eyebrow">Contact</p>
-          <h2>Send me a note.</h2>
-          <p className="contact-intro">Bootcamps, mentoring, team training, writing, protocol work, or simply an interesting technical question are all welcome.</p>
-          <ContactForm />
-          <a className="contact-page-link" href="/contact">Open the dedicated contact page →</a>
-        </div>
-      </section>
-
-      <SiteFooter />
-    </main>
+      </div>
+    </section>
+    <section className="about wrap" aria-labelledby="about-title">
+      <h2 id="about-title">Hi, I’m Andrey.</h2>
+      <div><p>I’m a blockchain engineer and protocol builder. This is where I share the explanations, experiments, and questions that come out of my work.</p><div className="actions"><a href="/about">More about me →</a><a href="/contact">Get in touch →</a></div></div>
+    </section>
+  </main><footer className="wrap"><span>0xByteBeetle · Andrey Obruchkov</span><div><a href="https://andreyobruchkov1996.substack.com" target="_blank" rel="noopener noreferrer">Substack ↗</a><a href="https://github.com/0xByteBeetle" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/contact">Contact</a><a href="/inbox">Owner inbox</a></div></footer></div>
   );
 }

@@ -52,7 +52,9 @@ test("server-renders the 0xByteBeetle landing page", async () => {
   const html = await response.text();
   assert.match(html, /<title>0xByteBeetle: Multichain Engineering Education<\/title>/i);
   assert.match(html, /Notes, bootcamps, and practical experiments/);
-  assert.match(html, /What I am exploring/);
+  assert.match(html, /Understanding blockchain,/);
+  assert.match(html, /beneath the surface/);
+  assert.match(html, /A few places to begin/);
   assert.match(html, /Blogs/);
   assert.match(html, /href="\/blogs"/);
   assert.match(html, /href="\/blogs\/evm"/);
@@ -63,10 +65,14 @@ test("server-renders the 0xByteBeetle landing page", async () => {
   assert.match(html, /href="\/contact"/);
   assert.match(html, /EVM Engineering Bootcamp/);
   assert.match(html, /Advanced EVM Bootcamp/);
-  assert.match(html, /If code appears in a lesson, it exists on our side, it runs/);
-  assert.match(html, /Send me a note/);
-  assert.match(html, /Telegram/);
-  assert.match(html, /Discord/);
+  assert.match(html, /Prefer a structured path/);
+  assert.match(html, /Hi, I’m Andrey/);
+  assert.doesNotMatch(html, /What I am exploring|The course rule|<form/);
+  const navs = [...html.matchAll(/<nav\b[^>]*aria-label="(?:Main|Mobile) navigation"[^>]*>([\s\S]*?)<\/nav>/g)];
+  assert.equal(navs.length, 2);
+  for (const nav of navs) assert.match(nav[1], /<a href="\/" aria-current="page">Home<\/a>/);
+  assert.ok(html.indexOf('id="writing-title"') < html.indexOf('id="study-title"'));
+  assert.equal((html.match(/<article>/g) ?? []).length, 3);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -89,6 +95,12 @@ test("renders the dedicated public knowledge pages", async () => {
     const html = await response.text();
     assert.match(html, expected, pathname);
     assert.match(html, /0xByteBeetle/, pathname);
+    assert.match(html, /<a href="\/">Home<\/a>/, pathname);
+    if (pathname === "/contact") {
+      assert.match(html, /<form/);
+      assert.match(html, /Telegram/);
+      assert.match(html, /Discord/);
+    }
   }
 });
 
