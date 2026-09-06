@@ -242,3 +242,5 @@
   .site-design .submission-meta { flex-wrap: wrap; }
   .site-design .submission-contacts { overflow-wrap: anywhere; }
 }
+.site-design .direct-email { overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 4px; }
+.site-design .direct-contact { margin-top: 22px; font-size: 16px; line-height: 1.7; color: var(--muted); }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { EmailLink } from "../../contact-details";
 import { foundationCurriculum } from "../curriculum-data";
 import { Curriculum } from "../curriculum";
 import { SiteFooter, SiteHeader } from "../../site-shell";
@@ -28,6 +29,7 @@ export default function EvmEngineeringPage() {
             <a className="button button-primary" href="#curriculum">Explore the curriculum ↓</a>
             <a className="button button-secondary" href="/contact">Ask about guided study</a>
           </div>
+          <p className="direct-contact">Questions about the course? Email me at <EmailLink subject="EVM Engineering Bootcamp" />.</p>
         </div>
         <aside className="course-facts">
           <div><span>Length</span><strong>6 weeks</strong></div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EmailLink } from "./contact-details";
 
 const navigation = [
   { href: "/bootcamps", label: "Bootcamps", key: "bootcamps" },
@@ -59,6 +60,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <Link href="/">0xByteBeetle · Andrey Obruchkov</Link>
       <div className="footer-links">
+        <EmailLink />
         <a href="https://andreyobruchkov1996.substack.com" target="_blank" rel="noreferrer">Substack ↗</a>
         <a href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">GitHub ↗</a>
         <a href="/contact">Contact</a>

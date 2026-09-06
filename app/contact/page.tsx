@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "../contact-form";
+import { EmailLink } from "../contact-details";
 import { SiteFooter, SiteHeader } from "../site-shell";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function ContactPage() {
           <p className="eyebrow">Contact</p>
           <h1>Send me a note.</h1>
           <p>I read these messages myself. You do not need to prepare a formal inquiry or know exactly what format you need.</p>
+          <p className="direct-contact">Email me directly at <EmailLink />, or leave a message using the form.</p>
           <ul className="plain-list">
             {reasons.map((reason) => <li key={reason}>{reason}</li>)}
           </ul>

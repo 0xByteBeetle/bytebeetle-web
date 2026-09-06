@@ -23,6 +23,20 @@ async function render(pathname = "/") {
   );
 }
 
+test("direct email is available in the footer and on contact and course pages", async () => {
+  for (const path of ["/", "/contact", "/bootcamps/evm-engineering", "/bootcamps/advanced-evm"]) {
+    const response = await render(path);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    const footer = html.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1];
+    assert.match(footer ?? "", /href="mailto:bytebeetle1@gmail\.com"/);
+    if (path !== "/") {
+      const content = html.replace(/<footer\b[^>]*>[\s\S]*?<\/footer>/, "");
+      assert.match(content, /href="mailto:bytebeetle1@gmail\.com(?:\?subject=[^"]*)?"/);
+    }
+  }
+});
+
 test("the Solana archive exposes the corrected wallet example", async () => {
   const response=await render("/blogs/solana?q=Part%206");
   assert.equal(response.status,200);
