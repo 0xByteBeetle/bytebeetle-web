@@ -101,37 +101,3 @@ export const evmMediumArticles = mediumArticles.filter(
 export const solanaMediumArticles = mediumArticles.filter(
   (article) => article.chain === "Solana",
 );
-
-export const foundationCurriculumUrl =
-  "https://docs.google.com/document/d/1GowdQgZ0wf510Kt9NuNKI1086jfdWHdaIRoM55b-Wzg/edit";
-
-export const advancedCurriculumUrl =
-  "https://docs.google.com/document/d/1tjLyXuMbwjgzDwafG_9aRbQ3Q1q-JhAwTPg_yeJBCbw/edit";
-
-export const foundationWeeks = [
-  "Ethereum internals, nodes, and the developer environment",
-  "Smart contract foundations and Solidity-to-EVM translation",
-  "Transaction and message types in the EVM",
-  "On-chain activity, logs, streaming, and monitoring systems",
-  "Mini DEX and live monitoring system",
-];
-
-export const advancedWeeks = [
-  "Advanced token standards, custom hooks, and extensibility",
-  "Smart contract architecture, factories, and proxies",
-  "DeFi mechanics, AMMs, swaps, and liquidity",
-  "The EVM engine, gas optimization, and new transaction types",
-  "Advanced security, MEV, fuzzing, and invariant testing",
-  "Production protocol architecture capstone",
-];
-
-export const advancedWeekOneModules = [
-  "ERC-20 internals and the token lifecycle",
-  "Custom tokenomics: fees, rebasing, and reflection",
-  "EIP-712 and ERC-2612 Permit",
-  "ERC-721 internals and transfer safety",
-  "ERC-721A and gas-optimized minting",
-  "On-chain metadata and ERC-2981 royalties",
-  "ERC-1155 multi-token engineering",
-  "Dual-nature and hybrid tokens",
-];

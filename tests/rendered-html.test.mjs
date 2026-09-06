@@ -83,7 +83,7 @@ test("renders the dedicated public knowledge pages", async () => {
     ["/blogs/solana", /Solana blogs/],
     ["/bootcamps", /A course should survive contact with the terminal/],
     ["/bootcamps/evm-engineering", /From protocol mechanics to a working system/],
-    ["/bootcamps/advanced-evm", /Advanced token engineering, from ERC-20 to hybrid standards/],
+    ["/bootcamps/advanced-evm", /advanced token engineering, from ERC-20 to hybrid standards/],
     ["/resources", /Code, curricula, and sources you can inspect yourself/],
     ["/about", /I learn systems by taking them apart/],
     ["/contact", /I read these messages myself/],
@@ -188,11 +188,43 @@ test("contact and curricula retain their controls after the visual update", asyn
   }
   assert.match(contact, /type="submit"/);
   assert.match(contact, /href="\/privacy"/);
-  for (const [route, id] of [["/bootcamps/evm-engineering", "1GowdQgZ0wf510Kt9NuNKI1086jfdWHdaIRoM55b-Wzg"], ["/bootcamps/advanced-evm", "1tjLyXuMbwjgzDwafG_9aRbQ3Q1q-JhAwTPg_yeJBCbw"]]) {
+  for (const route of ["/bootcamps/evm-engineering", "/bootcamps/advanced-evm"]) {
     const html = await (await render(route)).text();
-    assert.ok(html.includes(`https://docs.google.com/document/d/${id}/edit`), route);
-    assert.match(html, /class="curriculum-list"/, route);
+    assert.match(html, /href="#curriculum"/, route);
+    assert.match(html, /class="curriculum-weeks"/, route);
+    assert.doesNotMatch(html, /href="https:\/\/docs\.google\.com/, route);
   }
+});
+
+test("full weekly curriculum summaries are server-rendered without external redirects", async () => {
+  const { foundationCurriculum, advancedCurriculum } = await import("../app/bootcamps/curriculum-data.ts");
+  for (const [route, weeks] of [["/bootcamps/evm-engineering", foundationCurriculum], ["/bootcamps/advanced-evm", advancedCurriculum]]) {
+    const html = (await (await render(route)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    assert.equal((html.match(/<details class="curriculum-week"/g) ?? []).length, weeks.length);
+    assert.equal((html.match(/<details class="curriculum-week" open=""/g) ?? []).length, 1);
+    for (const week of weeks) {
+      assert.ok(html.includes(week.label), week.label);
+      assert.ok(html.includes(week.title.replaceAll("&", "&amp;")), week.title);
+      for (const suffix of ["topics", "hands-on work", "outcomes"]) {
+        assert.ok(html.includes(`aria-label="${week.label} ${suffix}"`), `${week.label} ${suffix}`);
+      }
+    }
+    assert.match(html, /Expand all weeks/);
+    assert.match(html, /Collapse all/);
+    assert.match(html, /aria-controls="curriculum-weeks"/);
+    assert.doesNotMatch(html, /Open Google Doc|Open the full curriculum|Open the working curriculum/);
+  }
+  assert.equal(foundationCurriculum.length, 5);
+  assert.equal(foundationCurriculum.at(-1).label, "Weeks 5–6");
+  assert.equal(advancedCurriculum.length, 6);
+  assert.equal(advancedCurriculum[0].modules.length, 8);
+  const advanced = await (await render("/bootcamps/advanced-evm")).text();
+  assert.match(advanced, /Working curriculum/);
+  assert.match(advanced, /Modules in this week/);
+  const resources = await (await render("/resources")).text();
+  assert.match(resources, /href="\/bootcamps\/evm-engineering#curriculum"/);
+  assert.match(resources, /href="\/bootcamps\/advanced-evm#curriculum"/);
+  assert.doesNotMatch(resources, /href="https:\/\/docs\.google\.com/);
 });
 
 test("the shared theme owns the shell and includes responsive page and form layouts", async () => {

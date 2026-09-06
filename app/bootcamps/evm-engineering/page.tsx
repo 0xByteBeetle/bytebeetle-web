@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { foundationCurriculumUrl, foundationWeeks } from "../../content";
+import { foundationCurriculum } from "../curriculum-data";
+import { Curriculum } from "../curriculum";
 import { SiteFooter, SiteHeader } from "../../site-shell";
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default function EvmEngineeringPage() {
           <h1>EVM Engineering Bootcamp</h1>
           <p className="hero-lede">A six-week engineering path for developers who know basic Solidity and want to understand what happens beneath contract interfaces.</p>
           <div className="hero-actions">
-            <a className="button button-primary" href={foundationCurriculumUrl} target="_blank" rel="noreferrer">Open the full curriculum ↗</a>
+            <a className="button button-primary" href="#curriculum">Explore the curriculum ↓</a>
             <a className="button button-secondary" href="/contact">Ask about guided study</a>
           </div>
         </div>
@@ -36,20 +37,13 @@ export default function EvmEngineeringPage() {
         </aside>
       </section>
 
-      <section className="curriculum-section">
+      <section className="curriculum-section" id="curriculum" aria-labelledby="curriculum-heading">
         <div className="section-heading compact-heading">
           <p className="eyebrow">Curriculum map</p>
-          <h2>From protocol mechanics to a working system.</h2>
-          <p>The final two weeks are combined around one capstone, so the curriculum has five distinct learning stages across six weeks.</p>
+          <h2 id="curriculum-heading">From protocol mechanics to a working system.</h2>
+          <p>Explore the topics, practical work, and outcomes for each week. The final two weeks come together in one full-stack project.</p>
         </div>
-        <ol className="curriculum-list">
-          {foundationWeeks.map((week, index) => (
-            <li key={week}>
-              <span>{index === 4 ? "05–06" : `0${index + 1}`}</span>
-              <h3>{week}</h3>
-            </li>
-          ))}
-        </ol>
+        <Curriculum weeks={foundationCurriculum} />
       </section>
 
       <section className="two-column-detail">

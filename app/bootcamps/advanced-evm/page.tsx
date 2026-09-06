@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { advancedCurriculumUrl, advancedWeekOneModules, advancedWeeks } from "../../content";
+import { advancedCurriculum } from "../curriculum-data";
+import { Curriculum } from "../curriculum";
 import { SiteFooter, SiteHeader } from "../../site-shell";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function AdvancedEvmPage() {
           <h1>Advanced EVM Bootcamp</h1>
           <p className="hero-lede">A production-level study for Solidity engineers who want stronger judgment around standards, architecture, DeFi mechanics, gas, and adversarial behavior.</p>
           <div className="hero-actions">
-            <a className="button button-primary" href={advancedCurriculumUrl} target="_blank" rel="noreferrer">Open the working curriculum ↗</a>
+            <a className="button button-primary" href="#curriculum">Explore the curriculum ↓</a>
             <a className="button button-secondary" href="/contact">Follow or ask about the course</a>
           </div>
         </div>
@@ -29,29 +30,13 @@ export default function AdvancedEvmPage() {
         </aside>
       </section>
 
-      <section className="curriculum-section">
+      <section className="curriculum-section" id="curriculum" aria-labelledby="curriculum-heading">
         <div className="section-heading compact-heading">
           <p className="eyebrow">Six-week direction</p>
-          <h2>The curriculum follows the decisions senior engineers face.</h2>
+          <h2 id="curriculum-heading">The curriculum follows the decisions senior engineers face.</h2>
+          <p>Read the planned topics, practical work, and outcomes here. Week one includes eight modules on advanced token engineering, from ERC-20 to hybrid standards. The course is still in development.</p>
         </div>
-        <ol className="curriculum-list">
-          {advancedWeeks.map((week, index) => (
-            <li key={week}><span>0{index + 1}</span><h3>{week}</h3></li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="module-map-section">
-        <div className="section-heading compact-heading">
-          <p className="eyebrow">Week one · In active development</p>
-          <h2>Advanced token engineering, from ERC-20 to hybrid standards.</h2>
-          <p>These modules are written as deep student-facing lessons with runnable instructor references, visible code context, and separate technical and hands-on questions.</p>
-        </div>
-        <ol className="module-grid">
-          {advancedWeekOneModules.map((module, index) => (
-            <li key={module}><span>{String(index + 1).padStart(2, "0")}</span><p>{module}</p></li>
-          ))}
-        </ol>
+        <Curriculum weeks={advancedCurriculum} planned />
       </section>
 
       <section className="quiet-cta dark-cta">

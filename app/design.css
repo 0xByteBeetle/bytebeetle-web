@@ -122,6 +122,58 @@
 .site-design .profile-link-list a { min-height: 54px; }
 .site-design .profile-link-list a:hover { color: var(--accent); }
 
+/* Course content lives on the page; disclosure keeps the overview scannable. */
+.site-design #curriculum { scroll-margin-top: 24px; }
+.site-design .curriculum-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px 24px; margin: 0 0 22px; }
+.site-design .curriculum-toolbar p { margin: 0; color: var(--muted); font-size: 14px; }
+.site-design .curriculum-toolbar > div { display: flex; flex-wrap: wrap; gap: 18px; }
+.site-design .curriculum-toolbar button { padding: 8px 0; border: 0; background: none; color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; text-decoration: underline; text-underline-offset: 5px; }
+.site-design .curriculum-week { border-top: 1px solid var(--border); }
+.site-design .curriculum-week:last-child { border-bottom: 1px solid var(--border); }
+.site-design .curriculum-week > summary { display: grid; grid-template-columns: 90px minmax(0,1fr) 24px; align-items: start; gap: 24px; padding: 28px 0; cursor: pointer; list-style: none; }
+.site-design .curriculum-week > summary::-webkit-details-marker { display: none; }
+.site-design .curriculum-week > summary::marker { content: ""; }
+.site-design .curriculum-week > summary:hover strong { color: var(--accent); }
+.site-design .curriculum-week-label { padding-top: 5px; color: var(--muted); font-size: 14px; }
+.site-design .curriculum-week-overview { display: grid; gap: 12px; }
+.site-design .curriculum-week-overview strong { font: 400 29px/1.2 var(--font-editorial-serif); letter-spacing: -.02em; }
+.site-design .curriculum-week-overview > span { max-width: 790px; color: var(--muted); font-size: 16px; line-height: 1.65; }
+.site-design .curriculum-toggle { display: grid; place-items: center; height: 32px; color: var(--muted); font-size: 23px; font-weight: 300; }
+.site-design .curriculum-toggle::before { content: "+"; }
+.site-design .curriculum-week[open] > summary .curriculum-toggle::before { content: "−"; }
+.site-design .curriculum-week-content { padding: 0 48px 36px 114px; }
+.site-design .curriculum-detail-columns { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 44px; align-items: start; }
+.site-design .curriculum-week-content h3 { margin: 0 0 22px; font: 400 24px/1.25 var(--font-editorial-serif); letter-spacing: -.015em; }
+.site-design .curriculum-week-content h4 { margin: 0 0 10px; font: 550 16px/1.5 var(--font-editorial-sans); }
+.site-design .curriculum-week-content ul { list-style: disc; margin: 0; padding-left: 18px; }
+.site-design .curriculum-week-content li { color: var(--muted); font-size: 16px; line-height: 1.65; padding-left: 3px; margin-bottom: 10px; }
+.site-design .curriculum-topic + .curriculum-topic { margin-top: 25px; }
+.site-design .curriculum-practice { background: var(--soft); padding: 26px; border-radius: 4px; }
+.site-design .curriculum-practice li:last-child { margin-bottom: 0; }
+.site-design .curriculum-outcomes { margin-top: 32px; }
+.site-design .curriculum-outcomes h3 { margin-bottom: 14px; }
+.site-design .curriculum-modules { margin-bottom: 32px; }
+.site-design .curriculum-modules ol { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px 34px; list-style: decimal; margin: 0; padding-left: 23px; }
+.site-design .curriculum-modules li { margin-bottom: 0; }
+@media(max-width:960px) {
+  .site-design .curriculum-week-content { padding-left: 0; padding-right: 0; }
+  .site-design .curriculum-detail-columns { gap: 28px; }
+}
+@media(max-width:760px) {
+  .site-design .curriculum-week > summary { grid-template-columns: minmax(0,1fr) 24px; gap: 8px 14px; padding: 24px 0; }
+  .site-design .curriculum-week-label { grid-column: 1; padding: 0; }
+  .site-design .curriculum-week-overview { grid-column: 1; grid-row: 2; }
+  .site-design .curriculum-toggle { grid-column: 2; grid-row: 1 / 3; }
+  .site-design .curriculum-week-overview strong { font-size: 26px; }
+  .site-design .curriculum-detail-columns,.site-design .curriculum-modules ol { grid-template-columns: 1fr; }
+  .site-design .curriculum-practice { padding: 22px; }
+  .site-design .curriculum-week-content { padding-bottom: 28px; }
+}
+@media print {
+  .site-design .curriculum-week::details-content { display: block; content-visibility: visible; }
+  .site-design .curriculum-toolbar button { display: none; }
+}
+
 /* Contact fields remain familiar and readable, with all validation states intact. */
 .site-design .contact-page-shell { min-height: 0; padding: 56px 0 70px; grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); gap: 70px; }
 .site-design .contact-context { padding: 0; }

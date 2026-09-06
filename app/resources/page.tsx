@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { advancedCurriculumUrl, foundationCurriculumUrl } from "../content";
 import { SiteFooter, SiteHeader } from "../site-shell";
 
 export const metadata: Metadata = {
@@ -62,11 +61,11 @@ export default function ResourcesPage() {
         <div className="library-intro">
           <p className="eyebrow">Course maps</p>
           <h2>Read the curricula.</h2>
-          <p>The website gives a readable overview. These working documents contain the complete week-by-week direction.</p>
+          <p>Explore the weekly topics, hands-on work, and learning outcomes directly on each bootcamp page.</p>
         </div>
         <div className="document-links">
-          <a href={foundationCurriculumUrl} target="_blank" rel="noreferrer"><span>EVM foundation</span><strong>EVM Engineering Bootcamp curriculum</strong><span>Open Google Doc ↗</span></a>
-          <a href={advancedCurriculumUrl} target="_blank" rel="noreferrer"><span>EVM advanced</span><strong>Advanced EVM Bootcamp curriculum</strong><span>Open Google Doc ↗</span></a>
+          <a href="/bootcamps/evm-engineering#curriculum"><span>EVM foundation</span><strong>EVM Engineering Bootcamp curriculum</strong><span>Explore curriculum →</span></a>
+          <a href="/bootcamps/advanced-evm#curriculum"><span>EVM advanced</span><strong>Advanced EVM Bootcamp curriculum</strong><span>Explore curriculum →</span></a>
         </div>
       </section>
 
