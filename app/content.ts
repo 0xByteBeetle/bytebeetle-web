@@ -8,6 +8,7 @@ export type Article = {
   chain: "EVM" | "Solana";
   slug?: string;
   solutionHref?: string;
+  codeUpdated?: boolean;
 };
 
 export const substackArticles: Article[] = generatedSubstackArticles;

@@ -37,6 +37,7 @@ const output = articles.map((article) => {
     chain,
     slug: article.slug,
     solutionHref: `https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/${article.chain}/${article.slug}`,
+    ...(article.corrections?.length ? { codeUpdated: true } : {}),
   };
 });
 

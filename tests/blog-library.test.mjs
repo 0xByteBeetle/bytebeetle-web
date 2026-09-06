@@ -6,6 +6,14 @@ import { articleTopic, selectArticles, topicOptions } from "../app/blogs/library
 const source = await readFile(new URL("../app/substack-articles.generated.ts", import.meta.url), "utf8");
 const catalog = JSON.parse(source.slice(source.indexOf("= [") + 2).trim().replace(/;$/, ""));
 
+test("the corrected wallet example points to the published main-branch article resources", () => {
+  const updated=catalog.filter(article=>article.codeUpdated);
+  assert.equal(updated.length,1);
+  assert.equal(updated[0].slug,"understanding-solana-part-6-transactions");
+  assert.equal(updated[0].solutionHref,"https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/understanding-solana-part-6-transactions");
+  assert.ok(catalog.every(article=>!article.solutionHref.includes("codex/")));
+});
+
 test("topic browsing accounts for every catalog entry without duplicates", () => {
   for (const chain of ["EVM", "Solana"]) {
     const articles = catalog.filter((article) => article.chain === chain);

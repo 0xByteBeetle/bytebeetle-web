@@ -23,6 +23,14 @@ async function render(pathname = "/") {
   );
 }
 
+test("the Solana archive exposes the corrected wallet example", async () => {
+  const response=await render("/blogs/solana?q=Part%206");
+  assert.equal(response.status,200);
+  const html=await response.text();
+  assert.match(html,/Updated example/);
+  assert.match(html,/https:\/\/github.com\/0xByteBeetle\/blog-solutions\/tree\/main\/articles\/solana\/understanding-solana-part-6-transactions/);
+});
+
 test("server-renders the 0xByteBeetle landing page", async () => {
   const response = await render();
   assert.equal(response.status, 200);

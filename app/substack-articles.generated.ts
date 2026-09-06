@@ -101,7 +101,8 @@ export const substackArticles: Article[] = [
     "topic": "Solana",
     "chain": "Solana",
     "slug": "understanding-solana-part-6-transactions",
-    "solutionHref": "https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/understanding-solana-part-6-transactions"
+    "solutionHref": "https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/understanding-solana-part-6-transactions",
+    "codeUpdated": true
   },
   {
     "title": "Understanding Solana - Part 5: Transaction, Serialization, Signatures, Fees, and Runtime Execution",
