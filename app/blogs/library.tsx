@@ -50,7 +50,7 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
       <nav className="blog-tabs" aria-label="Blog categories">
         {chains.map((item) => (
           <a key={item.value} href={chainHref(item.href)} aria-current={chain === item.value ? "page" : undefined}>
-            {item.label}<span>{articles.filter((article) => item.value === "all" || article.chain === item.value).length}</span>
+            {item.label}
           </a>
         ))}
       </nav>

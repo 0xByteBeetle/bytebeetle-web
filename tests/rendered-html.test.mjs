@@ -31,6 +31,19 @@ test("the Solana archive exposes the corrected wallet example", async () => {
   assert.match(html,/https:\/\/github.com\/0xByteBeetle\/blog-solutions\/tree\/main\/articles\/solana\/understanding-solana-part-6-transactions/);
 });
 
+test("blog category tabs show labels without article counts", async () => {
+  for (const pathname of ["/blogs", "/blogs/evm", "/blogs/solana"]) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    const navigation = html.match(/<nav\b[^>]*aria-label="Blog categories"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+    assert.ok(navigation, pathname);
+    const labels = [...navigation.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)]
+      .map(match => match[1].replace(/<[^>]*>/g, "").trim());
+    assert.deepEqual(labels, ["All articles", "EVM", "Solana"], pathname);
+  }
+});
+
 test("server-renders the 0xByteBeetle landing page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
