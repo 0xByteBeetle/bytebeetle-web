@@ -9,7 +9,7 @@ test("notifications use the authenticated fixed relay", async () => {
     called = true;
     assert.equal(url, config.url);
     assert.equal(options.headers.Authorization, "Bearer test-only");
-    assert.equal(options.redirect, "error");
+    assert.equal(options.redirect, "manual");
     assert.deepEqual(JSON.parse(options.body), input);
     return Response.json({ ok: true });
   }), true);

@@ -15,7 +15,8 @@ export async function deliverContactNotification(input: NotificationInput, confi
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.token}` },
       body: JSON.stringify(input),
-      redirect: "error",
+      // Workers supports manual redirects; reject every non-2xx response below.
+      redirect: "manual",
       signal: AbortSignal.timeout(15000),
     });
     if (!response.ok) { report(`relay_http_${response.status}`); await response.body?.cancel(); return false; }
