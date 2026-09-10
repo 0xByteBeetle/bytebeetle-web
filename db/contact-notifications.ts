@@ -7,9 +7,9 @@ export type NotificationInput = {
   message: string;
 };
 
-export async function deliverContactNotification(input: NotificationInput, config: { url: string; token: string }, fetcher: typeof fetch = fetch): Promise<boolean> {
+export async function deliverContactNotification(input: NotificationInput, config: { url: string; token: string }, fetcher: typeof fetch = fetch, report: (reason: string) => void = () => {}): Promise<boolean> {
   // Only this fixed owner-only relay may receive contact details or the secret.
-  if (config.url !== "https://bytebeetle-contact-mailer.0xbytebeetle.workers.dev/notify" || !config.token) return false;
+  if (config.url !== "https://bytebeetle-contact-mailer.0xbytebeetle.workers.dev/notify" || !config.token) { report("invalid_configuration"); return false; }
   try {
     const response = await fetcher(config.url, {
       method: "POST",
@@ -18,10 +18,13 @@ export async function deliverContactNotification(input: NotificationInput, confi
       redirect: "error",
       signal: AbortSignal.timeout(15000),
     });
-    if (!response.ok) { await response.body?.cancel(); return false; }
+    if (!response.ok) { report(`relay_http_${response.status}`); await response.body?.cancel(); return false; }
     const result = await response.json() as { ok?: boolean };
     return result.ok === true;
-  } catch { return false; }
+  } catch (error) {
+    report(error instanceof Error ? `relay_exception_${error.name}` : "relay_exception");
+    return false;
+  }
 }
 
 export async function notifyContactSubmission(input: NotificationInput): Promise<void> {
@@ -29,8 +32,9 @@ export async function notifyContactSubmission(input: NotificationInput): Promise
     const { env } = await import("cloudflare:workers");
     const url = Reflect.get(env, "CONTACT_MAILER_URL");
     const token = Reflect.get(env, "CONTACT_MAILER_TOKEN");
-    const sent = typeof url === "string" && typeof token === "string" && await deliverContactNotification(input, { url, token });
-    if (!sent) console.error(JSON.stringify({ event: "contact_notification_failed", requestId: input.id }));
+    let reason = "missing_configuration";
+    const sent = typeof url === "string" && typeof token === "string" && await deliverContactNotification(input, { url, token }, fetch, value => { reason = value; });
+    if (!sent) console.error(JSON.stringify({ event: "contact_notification_failed", requestId: input.id, reason }));
   } catch {
     console.error(JSON.stringify({ event: "contact_notification_failed", requestId: input.id }));
   }
