@@ -1,0 +1,40 @@
+{
+  "name": "bytebeetle-contact-mailer",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "destination_address": "bytebeetle1@gmail.com",
+      "allowed_sender_addresses": [
+        "notifications@0xbytebeetle.com"
+      ]
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "PER_CONTACT",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 3,
+        "period": 60
+      }
+    },
+    {
+      "name": "GLOBAL_LIMIT",
+      "namespace_id": "1002",
+      "simple": {
+        "limit": 30,
+        "period": 60
+      }
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

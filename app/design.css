@@ -244,3 +244,21 @@
 }
 .site-design .direct-email { overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 4px; }
 .site-design .direct-contact { margin-top: 22px; font-size: 16px; line-height: 1.7; color: var(--muted); }
+.site-design .course-interest { width: var(--page-width); margin: 20px auto 64px; padding: 36px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; scroll-margin-top: 32px; }
+.site-design .course-interest h2 { font: 400 clamp(28px,3vw,36px)/1.2 var(--font-editorial-serif); letter-spacing: -.025em; margin: 0 0 16px; }
+.site-design .course-interest p { font-size: 16px; line-height: 1.7; color: var(--muted); max-width: 520px; }
+.site-design .course-interest .interest-fields { display: grid; grid-template-columns: 1fr 1.3fr; gap: 16px; margin-bottom: 20px; }
+.site-design .course-interest label { font-size: 14px; font-weight: 500; }
+.site-design .course-interest label span { color: var(--muted); font-weight: 400; }
+.site-design .course-interest input { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--white); color: var(--ink); font: inherit; font-size: 16px; }
+.site-design .course-interest input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.site-design .course-interest .interest-privacy { margin-top: 14px; font-size: 14px; }
+.site-design .interest-privacy a { text-decoration: underline; text-underline-offset: 3px; }
+.site-design .interest-status:empty { display: none; }
+.site-design .interest-status { margin-top: 18px; }
+.site-design .interest-status.error { color: #9b3026; }
+@media (max-width: 960px) { .site-design .course-interest { gap: 32px; } }
+@media (max-width: 760px) {
+  .site-design .course-interest { grid-template-columns: 1fr; margin-bottom: 32px; gap: 20px; }
+  .site-design .course-interest .interest-fields { grid-template-columns: 1fr; }
+}

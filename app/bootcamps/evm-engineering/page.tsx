@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EmailLink } from "../../contact-details";
+import CourseInterestForm from "../course-interest-form";
 import { foundationCurriculum } from "../curriculum-data";
 import { Curriculum } from "../curriculum";
 import { SiteFooter, SiteHeader } from "../../site-shell";
@@ -27,9 +27,8 @@ export default function EvmEngineeringPage() {
           <p className="hero-lede">A six-week engineering path for developers who know basic Solidity and want to understand what happens beneath contract interfaces.</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#curriculum">Explore the curriculum ↓</a>
-            <a className="button button-secondary" href="/contact">Ask about guided study</a>
+            <a className="button button-secondary" href="#course-interest">Get in touch</a>
           </div>
-          <p className="direct-contact">Questions about the course? Email me at <EmailLink subject="EVM Engineering Bootcamp" />.</p>
         </div>
         <aside className="course-facts">
           <div><span>Length</span><strong>6 weeks</strong></div>
@@ -68,6 +67,7 @@ export default function EvmEngineeringPage() {
           ))}
         </div>
       </section>
+      <CourseInterestForm course="evm-engineering" />
       <SiteFooter />
     </main>
   );

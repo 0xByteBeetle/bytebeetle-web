@@ -1,3 +1,4 @@
+import { notifyContactSubmission } from "./contact-notifications";
 import {
   CONTACT_SUBMISSIONS_CREATED_AT_INDEX_SQL,
   CONTACT_SUBMISSIONS_STATUS_INDEX_SQL,
@@ -49,6 +50,7 @@ export async function createContactSubmission(input: {
 }): Promise<void> {
   const db = await getDb();
   await prepareContactDatabase(db);
+  const id = crypto.randomUUID();
   await db
     .prepare(`
       INSERT INTO contact_submissions
@@ -56,7 +58,7 @@ export async function createContactSubmission(input: {
       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'new')
     `)
     .bind(
-      crypto.randomUUID(),
+      id,
       Date.now(),
       input.name,
       input.email,
@@ -65,6 +67,8 @@ export async function createContactSubmission(input: {
       input.message,
     )
     .run();
+  // Save first: delivery failures must not lose the request or prompt duplicate submissions.
+  await notifyContactSubmission({ id, ...input });
 }
 
 export async function listContactSubmissions(): Promise<ContactSubmission[]> {

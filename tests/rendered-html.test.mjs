@@ -37,6 +37,23 @@ test("direct email is available in the footer and on contact and course pages", 
   }
 });
 
+test("bootcamp enquiries stay on the course page with a small inline form", async () => {
+  for (const path of ["/bootcamps/evm-engineering", "/bootcamps/advanced-evm"]) {
+    const response = await render(path);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /href="#course-interest"/);
+    assert.match(html, /id="course-interest"/);
+    assert.doesNotMatch(html, /Ask about guided study/);
+    const form = html.match(/<form\b[^>]*aria-label="Bootcamp interest"[^>]*>([\s\S]*?)<\/form>/)?.[1];
+    assert.ok(form);
+    assert.match(form, /name="name"/);
+    assert.match(form, /name="email"/);
+    assert.doesNotMatch(form, /<textarea|name="telegram"|name="discord"/);
+    assert.match(form, /No newsletter signup/);
+  }
+});
+
 test("the Solana archive exposes the corrected wallet example", async () => {
   const response=await render("/blogs/solana?q=Part%206");
   assert.equal(response.status,200);

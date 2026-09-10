@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EmailLink } from "../../contact-details";
+import CourseInterestForm from "../course-interest-form";
 import { advancedCurriculum } from "../curriculum-data";
 import { Curriculum } from "../curriculum";
 import { SiteFooter, SiteHeader } from "../../site-shell";
@@ -20,9 +20,8 @@ export default function AdvancedEvmPage() {
           <p className="hero-lede">A production-level study for Solidity engineers who want stronger judgment around standards, architecture, DeFi mechanics, gas, and adversarial behavior.</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#curriculum">Explore the curriculum ↓</a>
-            <a className="button button-secondary" href="/contact">Follow or ask about the course</a>
+            <a className="button button-secondary" href="#course-interest">Get in touch</a>
           </div>
-          <p className="direct-contact">Questions about the course? Email me at <EmailLink subject="Advanced EVM Bootcamp" />.</p>
         </div>
         <aside className="course-facts">
           <div><span>Planned length</span><strong>6 weeks</strong></div>
@@ -47,9 +46,10 @@ export default function AdvancedEvmPage() {
         <p>Examples are executed before publication. Screenshots come from real output. Internal implementation references are placed next to the explanation that needs them.</p>
         <div className="profile-links">
           <a href="/blogs">Read related writing →</a>
-          <a href="/contact">Ask about the course →</a>
+          <a href="#course-interest">Ask about the course →</a>
         </div>
       </section>
+      <CourseInterestForm course="advanced-evm" />
       <SiteFooter />
     </main>
   );
