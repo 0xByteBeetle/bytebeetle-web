@@ -3,14 +3,14 @@ import { SiteFooter, SiteHeader } from "../site-shell";
 
 export const metadata: Metadata = {
   title: "Resources | 0xByteBeetle",
-  description: "Runnable examples, curricula, source references, and engineering resources connected to 0xByteBeetle writing.",
+  description: "Companion code and bootcamp curricula connected to 0xByteBeetle writing.",
 };
 
 const ownedResources = [
   {
     label: "EVM · Solana",
     title: "Blog Solutions",
-    description: "One checked companion repository mapping all 53 Substack articles to runnable EVM and Solana examples.",
+    description: "Companion code for the EVM and Solana articles, organized by post.",
     href: "https://github.com/0xByteBeetle/blog-solutions",
   },
   {
@@ -21,22 +21,14 @@ const ownedResources = [
   },
 ];
 
-const sourceReferences = [
-  ["Agave", "Solana's validator implementation and the source behind runtime, transaction, fee, and compute-budget explanations.", "https://github.com/anza-xyz/agave"],
-  ["Token-2022", "The program and client implementations used while studying transfer hooks, confidential transfers, metadata, and extensions.", "https://github.com/solana-program/token-2022"],
-  ["SPL Token", "The canonical token program source used to follow account layouts and token processing behavior.", "https://github.com/solana-program/token"],
-  ["Borsh", "The serialization implementation referenced by the Borsh deep dive.", "https://github.com/near/borsh"],
-  ["Metaplex Token Metadata", "The program source used when explaining metadata accounts, derivation, and ownership.", "https://github.com/metaplex-foundation/mpl-token-metadata"],
-];
-
 export default function ResourcesPage() {
   return (
     <main>
       <SiteHeader active="resources" />
       <section className="page-hero">
         <p className="eyebrow">Resources</p>
-        <h1>Code, curricula, and sources you can inspect yourself.</h1>
-        <p>This page connects the writing and teaching material to runnable examples and the implementations behind the explanation. Public resources appear here when they are ready to be useful.</p>
+        <h1>Code and curricula you can explore yourself.</h1>
+        <p>Find companion code for the articles and the curriculum for each bootcamp.</p>
       </section>
 
       <section className="resource-section">
@@ -69,20 +61,6 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      <section className="resource-section">
-        <div className="library-intro">
-          <p className="eyebrow">Source reading</p>
-          <h2>Implementations behind the explanations.</h2>
-          <p>These are upstream projects, not 0xByteBeetle repositories. They are included because several articles trace their behavior directly.</p>
-        </div>
-        <div className="source-list">
-          {sourceReferences.map(([title, description, href]) => (
-            <a href={href} target="_blank" rel="noreferrer" key={title}>
-              <h3>{title}</h3><p>{description}</p><span>GitHub ↗</span>
-            </a>
-          ))}
-        </div>
-      </section>
       <SiteFooter />
     </main>
   );

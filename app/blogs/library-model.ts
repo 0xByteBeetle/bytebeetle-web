@@ -5,6 +5,7 @@ export type SortOrder = "newest" | "oldest" | "title";
 
 // Labels describe the subjects named in the original article titles.
 export function articleTopic(article: Article): string {
+  if (article.subject) return article.subject;
   const title = article.title.toLowerCase();
   if (article.chain === "Solana") {
     if (/token|metadata|native zk/.test(title)) return "Tokens & extensions";
@@ -12,6 +13,7 @@ export function articleTopic(article: Article): string {
     if (/part\s*[456]|instructions and messages/.test(title)) return "Transactions & messages";
     return "Accounts & programs";
   }
+  if (article.chain !== "EVM") return `${article.chain} internals`;
   if (/prox|deploy|factor|create2|diamond/.test(title)) return "Proxies & deployment";
   if (/rpc|node type|client|multicall|stream|event|transfer|eth_call/.test(title)) return "RPCs & on-chain data";
   if (/signature|eip-712|eip-191|signed data|signtypeddata/.test(title)) return "Signatures";
@@ -24,7 +26,7 @@ export function selectArticles(articles: Article[], query: string, topic: string
   const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const matches = articles.filter((article) => {
     const label = articleTopic(article);
-    const searchable = `${article.title} ${article.chain} ${label}`.toLowerCase();
+    const searchable = `${article.title} ${article.chain} ${label} ${(article.keywords ?? []).join(" ")}`.toLowerCase();
     return (!topic || label === topic) && words.every((word) => searchable.includes(word));
   });
   if (sort === "title") return matches.sort((a, b) => a.title.localeCompare(b.title, "en"));

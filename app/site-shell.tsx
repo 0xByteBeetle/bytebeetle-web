@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EmailLink } from "./contact-details";
+import { ecosystems } from "./ecosystems";
 
 const navigation = [
   { href: "/bootcamps", label: "Bootcamps", key: "bootcamps" },
@@ -38,12 +39,11 @@ export function SiteHeader({ active }: { active?: string }) {
           <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
           </a>
-          <a className="mobile-subitem" href="/blogs/evm" aria-current={active === "blogs-evm" ? "page" : undefined}>
-            EVM writing
-          </a>
-          <a className="mobile-subitem" href="/blogs/solana" aria-current={active === "blogs-solana" ? "page" : undefined}>
-            Solana writing
-          </a>
+          {ecosystems.map(item => (
+            <a className="mobile-subitem" href={item.href} key={item.slug} aria-current={active === `blogs-${item.slug}` ? "page" : undefined}>
+              {item.label} writing
+            </a>
+          ))}
           {navigation.map((item) => (
             <a href={item.href} key={item.key} aria-current={active === item.key ? "page" : undefined}>
               {item.label}

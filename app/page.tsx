@@ -1,4 +1,5 @@
 import { SiteHeader, SiteFooter } from "./site-shell";
+import { ecosystems } from "./ecosystems";
 import "./home.css";
 
 export default function Home() {
@@ -7,7 +8,7 @@ export default function Home() {
     <section className="intro wrap" aria-labelledby="intro-title">
       <p className="byline">Notes by Andrey Obruchkov</p>
       <h1 id="intro-title">Understanding blockchain,<br />beneath the surface.</h1>
-      <p className="intro-copy">I explore how blockchain systems work, from EVM execution to Solana’s account model. Here you’ll find deep dives, practical examples, and bootcamps for building a deeper understanding.</p>
+      <p className="intro-copy">I explore how blockchain systems work, from EVM execution and Solana’s account model to Hyperliquid’s architecture. Here you’ll find deep dives, practical examples, and bootcamps for building a deeper understanding.</p>
       <div className="actions">
         <a className="primary" href="/blogs">Explore the articles <span aria-hidden="true">↗</span></a>
         <a className="secondary" href="/bootcamps">Browse bootcamps <span aria-hidden="true">→</span></a>
@@ -35,7 +36,7 @@ export default function Home() {
           <div className="article-links"><a href="https://andreyobruchkov1996.substack.com/p/solana-deep-dive-unpacking-borsh" target="_blank" rel="noopener noreferrer">Read article ↗</a><a href="https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/solana-deep-dive-unpacking-borsh" target="_blank" rel="noopener noreferrer">Example code ↗</a></div>
         </article>
       </div>
-      <p className="browse"><span>Explore by ecosystem</span><a href="/blogs/evm">EVM →</a><a href="/blogs/solana">Solana →</a></p>
+      <p className="browse"><span>Explore by ecosystem</span>{ecosystems.map(item => <a href={item.href} key={item.slug}>{item.label} →</a>)}</p>
     </section>
     <section className="study" aria-labelledby="study-title">
       <div className="wrap">

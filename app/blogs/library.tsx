@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import type { Article } from "../content";
+import { ecosystems } from "../ecosystems";
 import { articleTopic, selectArticles, topicOptions, type ChainFilter, type SortOrder } from "./library-model";
 
 const PAGE_SIZE = 12;
 const chains = [
   { label: "All articles", value: "all", href: "/blogs" },
-  { label: "EVM", value: "EVM", href: "/blogs/evm" },
-  { label: "Solana", value: "Solana", href: "/blogs/solana" },
+  ...ecosystems.map(item => ({ ...item, value: item.label })),
 ] as const;
 
 export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initialSort }: {
@@ -59,7 +59,7 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
           <label htmlFor="article-search">Search articles</label>
           <div className="blog-search-field">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg>
-            <input id="article-search" type="search" placeholder="Try calldata, proxies, or Token-2022" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(PAGE_SIZE); }} />
+            <input id="article-search" type="search" placeholder={ecosystems.find(item => item.label === chain)?.searchHint ?? "Search by title, ecosystem, or topic"} value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(PAGE_SIZE); }} />
             {query && <button className="blog-clear-search" type="button" onClick={() => { setQuery(""); setVisibleCount(PAGE_SIZE); }} aria-label="Clear search">×</button>}
           </div>
         </div>

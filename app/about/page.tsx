@@ -22,7 +22,7 @@ export default function AboutPage() {
         <div className="story-body">
           <p>My work has involved smart contract integrations, DEX tooling, multichain wallets, infrastructure, protocol-level debugging, Go, and Rust. A large part of that work required going beyond documentation: reading implementations, tracing transactions, and understanding what happens when assumptions meet a real network.</p>
           <p>0xByteBeetle is where I organize that knowledge. It includes deep technical writing, complete learning paths, runnable examples, and questions designed to expose whether a concept is actually understood.</p>
-          <p>The EVM is the first course track, not the boundary of the project. The writing already covers Solana architecture, accounts, Token-2022, serialization, and runtime behavior. Over time, the same approach will extend into more ecosystems and the engineering problems between them.</p>
+          <p>The EVM is the first course track, not the boundary of the project. The writing also covers Solana’s accounts, Token-2022, serialization, and runtime behavior, and now Hyperliquid’s architecture. Over time, the same approach will extend into more ecosystems and the engineering problems between them.</p>
         </div>
       </section>
 

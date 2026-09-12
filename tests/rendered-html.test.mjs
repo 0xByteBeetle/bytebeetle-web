@@ -63,7 +63,7 @@ test("the Solana archive exposes the corrected wallet example", async () => {
 });
 
 test("blog category tabs show labels without article counts", async () => {
-  for (const pathname of ["/blogs", "/blogs/evm", "/blogs/solana"]) {
+  for (const pathname of ["/blogs", "/blogs/evm", "/blogs/solana", "/blogs/hyperliquid"]) {
     const response = await render(pathname);
     assert.equal(response.status, 200);
     const html = await response.text();
@@ -71,7 +71,7 @@ test("blog category tabs show labels without article counts", async () => {
     assert.ok(navigation, pathname);
     const labels = [...navigation.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)]
       .map(match => match[1].replace(/<[^>]*>/g, "").trim());
-    assert.deepEqual(labels, ["All articles", "EVM", "Solana"], pathname);
+    assert.deepEqual(labels, ["All articles", "EVM", "Solana", "Hyperliquid"], pathname);
   }
 });
 
@@ -90,6 +90,7 @@ test("server-renders the 0xByteBeetle landing page", async () => {
   assert.match(html, /href="\/blogs"/);
   assert.match(html, /href="\/blogs\/evm"/);
   assert.match(html, /href="\/blogs\/solana"/);
+  assert.match(html, /href="\/blogs\/hyperliquid"/);
   assert.match(html, /href="\/bootcamps"/);
   assert.match(html, /href="\/resources"/);
   assert.match(html, /href="\/about"/);
@@ -112,10 +113,11 @@ test("renders the dedicated public knowledge pages", async () => {
     ["/blogs", /Article library/],
     ["/blogs/evm", /EVM blogs/],
     ["/blogs/solana", /Solana blogs/],
+    ["/blogs/hyperliquid", /Hyperliquid blogs/],
     ["/bootcamps", /A course should survive contact with the terminal/],
     ["/bootcamps/evm-engineering", /From protocol mechanics to a working system/],
     ["/bootcamps/advanced-evm", /advanced token engineering, from ERC-20 to hybrid standards/],
-    ["/resources", /Code, curricula, and sources you can inspect yourself/],
+    ["/resources", /Code and curricula you can explore yourself/],
     ["/about", /I learn systems by taking them apart/],
     ["/contact", /I read these messages myself/],
   ];
@@ -133,6 +135,22 @@ test("renders the dedicated public knowledge pages", async () => {
       assert.match(html, /Discord/);
     }
   }
+});
+
+test("Hyperliquid lists only the published post, supports topic search, and has no invented companion", async () => {
+  for (const path of ["/blogs/hyperliquid", "/blogs/hyperliquid?q=HyperCore", "/blogs?q=Hyperliquid"]) {
+    const html = (await (await render(path)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    const results = html.match(/<ul class="blog-results">([\s\S]*?)<\/ul>/)?.[1];
+    assert.ok(results, path);
+    assert.equal((results.match(/class="blog-entry"/g) ?? []).length, 1);
+    assert.match(results, /Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1/);
+    assert.match(results, /https:\/\/andreyobruchkov1996.substack.com\/p\/hyperliquid-beyond-generic-vms-the/);
+    assert.match(results, /Architecture/);
+    assert.doesNotMatch(results, /blog-code-link|Part 2|draft|Solana|EVM internals/);
+    if (path.startsWith("/blogs/hyperliquid")) assert.doesNotMatch(html, /class="blog-medium"/);
+  }
+  const resources = await (await render("/resources")).text();
+  assert.doesNotMatch(resources, /Implementations behind the explanations|Source reading|class="source-list"/);
 });
 
 test("ships finished project metadata", async () => {

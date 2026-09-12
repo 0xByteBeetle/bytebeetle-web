@@ -1,17 +1,39 @@
 import { substackArticles as generatedSubstackArticles } from "./substack-articles.generated";
+import type { Ecosystem } from "./ecosystems";
 
 export type Article = {
   title: string;
   href: string;
   date: string;
-  topic: "EVM" | "Solana" | "Token-2022";
-  chain: "EVM" | "Solana";
+  topic: Ecosystem | "Token-2022";
+  chain: Ecosystem;
+  subject?: string;
+  keywords?: string[];
   slug?: string;
   solutionHref?: string;
   codeUpdated?: boolean;
 };
 
-export const substackArticles: Article[] = generatedSubstackArticles;
+// Public posts that do not yet have an entry in the companion-code catalog.
+// Verified against the public Substack feed on 2026-09-12. Never list drafts.
+const additionalPublishedArticles: Article[] = [
+  {
+    title: "Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1",
+    href: "https://andreyobruchkov1996.substack.com/p/hyperliquid-beyond-generic-vms-the",
+    date: "September 2026",
+    topic: "Hyperliquid",
+    chain: "Hyperliquid",
+    subject: "Architecture",
+    keywords: ["HyperCore", "HyperEVM", "clearinghouse", "cross-margin", "agent keys", "order book"],
+    slug: "hyperliquid-beyond-generic-vms-the",
+  },
+];
+
+// A verified companion can replace the supplemental record on a later sync.
+export const substackArticles: Article[] = [
+  ...generatedSubstackArticles,
+  ...additionalPublishedArticles.filter(article => !generatedSubstackArticles.some(existing => existing.href === article.href)),
+];
 
 export const evmSubstackArticles = substackArticles.filter(
   (article) => article.chain === "EVM",
