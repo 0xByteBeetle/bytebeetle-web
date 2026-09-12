@@ -3,14 +3,12 @@ import { SiteFooter, SiteHeader } from "../site-shell";
 
 export const metadata: Metadata = {
   title: "Bootcamps | 0xByteBeetle",
-  description: "Deep, runnable EVM engineering curricula by Andrey Obruchkov.",
+  description: "Compare the EVM Engineering and Advanced EVM bootcamps: prerequisites, detailed curricula, and hands-on projects.",
 };
 
 const principles = [
-  ["Start below the abstraction", "Understand what the EVM, client, transaction, or standard is doing before relying on a library."],
-  ["Run what you read", "Code shown in a module is maintained in a matching reference project and tested before it becomes teaching material."],
-  ["Separate knowing from doing", "Every module ends with technical questions and a separate hands-on section."],
-  ["Build judgment", "The goal is not to remember an API. It is to reason about behavior, trade-offs, failures, and security."],
+  ["Understand the mechanism", "Work through a detailed explanation, then inspect an example and the behavior it produces."],
+  ["Put it into practice", "Each module closes with technical questions and a separate hands-on section. Explain what happens, then work through it yourself."],
 ];
 
 export default function BootcampsPage() {
@@ -19,8 +17,8 @@ export default function BootcampsPage() {
       <SiteHeader active="bootcamps" />
       <section className="page-hero">
         <p className="eyebrow">Bootcamps</p>
-        <h1>Engineering courses for people who want to understand the system.</h1>
-        <p>0xByteBeetle bootcamps are long-form technical paths. They combine explanation, runnable code, inspected output, and exercises that expose gaps in understanding.</p>
+        <h1>Understand the internals. Put them to work.</h1>
+        <p>The bootcamps connect detailed explanations with technical questions, hands-on exercises, and a final project. Start with EVM Engineering if you know basic Solidity. Choose the advanced path when you are comfortable building and testing contracts.</p>
       </section>
 
       <section className="course-directory">
@@ -41,11 +39,11 @@ export default function BootcampsPage() {
           <div className="course-status"><span>02</span><span>In development</span></div>
           <p className="eyebrow">EVM advanced</p>
           <h2>Advanced EVM Bootcamp</h2>
-          <p>A production-level study of token internals, typed signatures, proxy architecture, DeFi mechanics, gas, MEV, and invariant testing.</p>
+          <p>A planned six-week study of custom tokens, signatures, upgradeable architecture, AMMs, gas, and adversarial testing.</p>
           <ul className="plain-list">
-            <li>For working Solidity engineers</li>
-            <li>Week one currently contains eight deep token modules</li>
-            <li>Verified reference implementations accompany lesson code</li>
+            <li>For people comfortable with Solidity and Foundry</li>
+            <li>Eight token modules begin the planned curriculum</li>
+            <li>Build toward a protocol capstone with fuzzing, invariants, and review</li>
           </ul>
           <a className="button button-primary" href="/bootcamps/advanced-evm">Explore the curriculum</a>
         </article>
@@ -53,8 +51,8 @@ export default function BootcampsPage() {
 
       <section className="principles-section">
         <div className="section-heading compact-heading">
-          <p className="eyebrow">How the material is built</p>
-          <h2>A course should survive contact with the terminal.</h2>
+          <p className="eyebrow">How you will study</p>
+          <h2>Read it, question it, try it.</h2>
         </div>
         <div className="principle-grid">
           {principles.map(([title, description], index) => (
@@ -68,10 +66,10 @@ export default function BootcampsPage() {
       </section>
 
       <section className="quiet-cta">
-        <p className="eyebrow">Learning format</p>
-        <h2>Use the curriculum independently, or ask about guided study.</h2>
-        <p>The right format depends on your background, pace, and whether you need code review, private support, or team training.</p>
-        <a className="text-link" href="/contact">Tell me what you are trying to learn →</a>
+        <p className="eyebrow">Not sure where to begin?</p>
+        <h2>Start with the curriculum, or send me a note.</h2>
+        <p>You can read every week’s topics and practical work on the course pages. If you are unsure about the level or learning format, tell me a little about your background.</p>
+        <a className="text-link" href="/contact">Get in touch →</a>
       </section>
       <SiteFooter />
     </main>

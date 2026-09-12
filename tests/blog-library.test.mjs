@@ -52,4 +52,25 @@ test("topics distinguish Solana fundamentals from extensions and execution from 
   assert.equal(topic("Confidential Transfers"), "Tokens & extensions");
   assert.equal(topic("UUPS"), "Proxies & deployment");
   assert.equal(topic("SignTypedData"), "Signatures");
+  assert.equal(topic("Interest-Bearing"), "Tokens & extensions");
+});
+
+test("reading paths resolve to published articles and keep their explicit order", async () => {
+  const { readingPaths, readingPathArticles } = await import("../app/reading-paths.ts");
+  for (const chain of ["EVM", "Solana"]) {
+    const result = readingPathArticles(chain, [...catalog].reverse());
+    assert.deepEqual(result.map(article => article.slug), readingPaths[chain].slugs);
+    assert.ok(result.every(article => article.chain === chain));
+    assert.equal(new Set(result.map(article => article.slug)).size, result.length);
+  }
+  assert.throws(() => readingPathArticles("EVM", []), /unpublished or missing/);
+  assert.deepEqual(readingPaths.Hyperliquid.slugs, ["hyperliquid-beyond-generic-vms-the"]);
+});
+
+test("editorial notes cover the published catalog without inventing article records", async () => {
+  const { articleDescriptions, articlesWithoutCode } = await import("../app/article-notes.ts");
+  const publishedSlugs = [...catalog.map(article => article.slug), "hyperliquid-beyond-generic-vms-the"];
+  assert.deepEqual(Object.keys(articleDescriptions).sort(), publishedSlugs.sort());
+  assert.ok(Object.values(articleDescriptions).every(description => description.length > 40 && description.length < 190));
+  assert.ok([...articlesWithoutCode].every(slug => publishedSlugs.includes(slug)));
 });

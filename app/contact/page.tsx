@@ -8,14 +8,6 @@ export const metadata: Metadata = {
   description: "Contact Andrey Obruchkov about bootcamps, mentoring, training, writing, or protocol engineering.",
 };
 
-const reasons = [
-  "You are considering one of the bootcamps and want to understand whether the level is right.",
-  "You want guided study, private mentoring, code review, or a one-to-one learning format.",
-  "Your team needs focused training around EVM internals, transactions, testing, or protocol architecture.",
-  "You found something interesting or questionable in an article and want to discuss it.",
-  "You want to talk about protocol engineering, technical writing, or collaboration.",
-];
-
 export default function ContactPage() {
   return (
     <main>
@@ -24,12 +16,9 @@ export default function ContactPage() {
         <div className="contact-context">
           <p className="eyebrow">Contact</p>
           <h1>Send me a note.</h1>
-          <p>I read these messages myself. You do not need to prepare a formal inquiry or know exactly what format you need.</p>
+          <p>A question about an article, a bootcamp, or something you are working on? I read these messages myself.</p>
           <p className="direct-contact">Email me directly at <EmailLink />, or leave a message using the form.</p>
-          <ul className="plain-list">
-            {reasons.map((reason) => <li key={reason}>{reason}</li>)}
-          </ul>
-          <p className="contact-small-note">Share at least one way to reply. Email, Telegram, and Discord are all supported.</p>
+          <p className="contact-small-note">Leave whichever contact works for you: email, Telegram, or Discord. You only need one.</p>
         </div>
         <div className="contact-panel standalone-contact">
           <ContactForm />

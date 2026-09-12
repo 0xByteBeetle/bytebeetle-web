@@ -12,7 +12,7 @@ export default function AboutPage() {
       <SiteHeader active="about" />
       <section className="page-hero about-hero">
         <p className="eyebrow">About</p>
-        <h1>I learn systems by taking them apart, then I teach what survives the process.</h1>
+        <h1>I want to understand what happens beneath the interface.</h1>
       </section>
 
       <section className="about-story">
@@ -21,17 +21,17 @@ export default function AboutPage() {
         </div>
         <div className="story-body">
           <p>My work has involved smart contract integrations, DEX tooling, multichain wallets, infrastructure, protocol-level debugging, Go, and Rust. A large part of that work required going beyond documentation: reading implementations, tracing transactions, and understanding what happens when assumptions meet a real network.</p>
-          <p>0xByteBeetle is where I organize that knowledge. It includes deep technical writing, complete learning paths, runnable examples, and questions designed to expose whether a concept is actually understood.</p>
-          <p>The EVM is the first course track, not the boundary of the project. The writing also covers Solana’s accounts, Token-2022, serialization, and runtime behavior, and now Hyperliquid’s architecture. Over time, the same approach will extend into more ecosystems and the engineering problems between them.</p>
+          <p>0xByteBeetle is the name I write under when exploring blockchain internals. I start with a question, follow the mechanism, and use examples to make it easier to see. The writing is for technical people, whether you build software, work with blockchain systems, or simply want to understand them.</p>
+          <p>The articles let you follow one question at a time. The bootcamps bring related ideas together into a longer path with exercises and projects. EVM is the first course track; the publication also explores Solana and Hyperliquid, with room for other chains as the work grows.</p>
         </div>
       </section>
 
       <section className="beliefs-section">
-        <p className="eyebrow">What matters to me</p>
+        <p className="eyebrow">The questions I follow</p>
         <div className="belief-grid">
-          <article><span>01</span><h2>Depth should remain understandable.</h2><p>A subject can be advanced without hiding behind terminology. The explanation should make the mechanism visible.</p></article>
-          <article><span>02</span><h2>Examples must be real.</h2><p>If code is used to teach an idea, it should exist, run, and produce output that has been inspected.</p></article>
-          <article><span>03</span><h2>Different chains deserve different mental models.</h2><p>Multichain engineering begins by respecting each runtime rather than forcing every ecosystem into an EVM-shaped explanation.</p></article>
+          <article><h2>What happens after you call a contract?</h2><p>Follow calldata into bytecode, inspect a transaction trace, and see how the execution context changes between calls.</p><a className="text-link" href="/blogs/evm">Explore the EVM writing →</a></article>
+          <article><h2>Where does a Solana program keep its state?</h2><p>Start with accounts, then connect their data to instructions, serialization, and token extensions.</p><a className="text-link" href="/blogs/solana">Explore the Solana writing →</a></article>
+          <article><h2>How does an exchange shape a blockchain?</h2><p>Look at HyperCore and HyperEVM, and how Hyperliquid’s architecture connects them.</p><a className="text-link" href="/blogs/hyperliquid">Explore the Hyperliquid writing →</a></article>
         </div>
       </section>
 

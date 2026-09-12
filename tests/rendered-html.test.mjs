@@ -81,11 +81,11 @@ test("server-renders the 0xByteBeetle landing page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>0xByteBeetle: Multichain Engineering Education<\/title>/i);
-  assert.match(html, /Notes, bootcamps, and practical experiments/);
+  assert.match(html, /<title>0xByteBeetle \| Blockchain internals by Andrey Obruchkov<\/title>/i);
+  assert.match(html, /for technical people who want to go deeper/);
   assert.match(html, /Understanding blockchain,/);
   assert.match(html, /beneath the surface/);
-  assert.match(html, /A few places to begin/);
+  assert.match(html, /Start exploring/);
   assert.match(html, /Blogs/);
   assert.match(html, /href="\/blogs"/);
   assert.match(html, /href="\/blogs\/evm"/);
@@ -102,7 +102,7 @@ test("server-renders the 0xByteBeetle landing page", async () => {
   assert.doesNotMatch(html, /What I am exploring|The course rule|<form/);
   const navs = [...html.matchAll(/<nav\b[^>]*aria-label="(?:Main|Mobile) navigation"[^>]*>([\s\S]*?)<\/nav>/g)];
   assert.equal(navs.length, 2);
-  for (const nav of navs) assert.match(nav[1], /<a href="\/" aria-current="page">Home<\/a>/);
+  for (const nav of navs) assert.match(nav[1], /<a(?=[^>]*href="\/")(?=[^>]*aria-current="page")[^>]*>Home<\/a>/);
   assert.ok(html.indexOf('id="writing-title"') < html.indexOf('id="study-title"'));
   assert.equal((html.match(/<article>/g) ?? []).length, 3);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
@@ -114,11 +114,11 @@ test("renders the dedicated public knowledge pages", async () => {
     ["/blogs/evm", /EVM blogs/],
     ["/blogs/solana", /Solana blogs/],
     ["/blogs/hyperliquid", /Hyperliquid blogs/],
-    ["/bootcamps", /A course should survive contact with the terminal/],
+    ["/bootcamps", /Read it, question it, try it/],
     ["/bootcamps/evm-engineering", /From protocol mechanics to a working system/],
     ["/bootcamps/advanced-evm", /advanced token engineering, from ERC-20 to hybrid standards/],
     ["/resources", /Code and curricula you can explore yourself/],
-    ["/about", /I learn systems by taking them apart/],
+    ["/about", /I want to understand what happens beneath the interface/],
     ["/contact", /I read these messages myself/],
   ];
 
@@ -239,12 +239,13 @@ test("all public pages share the editorial header, navigation and footer", async
     assert.ok(desktop, pathname);
     const links = [...desktop.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)]
       .map((match) => [match[1], match[2].trim()]);
-    assert.deepEqual(links, [["/", "Home"], ["/blogs", "Blogs"], ["/bootcamps", "Bootcamps"], ["/resources", "Resources"], ["/about", "About"], ["/contact", "Contact"]], pathname);
+    assert.deepEqual(links, [["/", "Home"], ["/blogs", "Blogs"], ["/bootcamps", "Bootcamps"], ["/about", "About"], ["/contact", "Contact"]], pathname);
     const footer = html.match(/<footer class="site-footer">[\s\S]*?<\/footer>/)?.[0];
     assert.ok(footer, pathname);
     referenceFooter ??= footer;
     assert.equal(footer, referenceFooter, pathname);
-    assert.match(footer, /href="\/inbox"/, pathname);
+    assert.match(footer, /href="\/resources"/, pathname);
+    assert.doesNotMatch(footer, /href="\/inbox"|Owner inbox/, pathname);
     assert.doesNotMatch(html, /class="brand-mark"|class="header-action"/, pathname);
   }
 });
@@ -306,4 +307,89 @@ test("the shared theme owns the shell and includes responsive page and form layo
   assert.match(css, /\.site-design \.contact-methods \{ grid-template-columns: 1fr; \}/);
   assert.match(css, /\.site-design \.form-message.error/);
   assert.doesNotMatch(homeCss, /\.site-header|\.mobile-menu|\.editorial-home footer/);
+});
+
+test("the homepage starts with one first article per ecosystem", async () => {
+  const html = (await (await render()).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  const starters = html.match(/<section class="writing wrap"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  assert.ok(starters);
+  const articles = [...starters.matchAll(/<article>([\s\S]*?)<\/article>/g)].map(match => match[1]);
+  assert.equal(articles.length, 3);
+  for (const [index, chain, slug] of [
+    [0, "EVM", "what-every-blockchain-developer-should-know-about-evm-internals-part-1-83a93c618257"],
+    [1, "Solana", "understanding-solana-architecture-account-model-and-transactions-part-1-1bffae449650"],
+    [2, "Hyperliquid", "hyperliquid-beyond-generic-vms-the"],
+  ]) {
+    assert.ok(articles[index].includes(slug));
+    assert.ok(articles[index].includes(chain));
+    assert.match(articles[index], /Read Part 1/);
+    assert.match(articles[index], /Explore the series/);
+    assert.match(articles[index], /<p>[^<]+<\/p>/);
+  }
+  assert.doesNotMatch(starters, /github\.com|Example code|Borsh|Factories/);
+  assert.match(articles[2], /href="\/blogs\/hyperliquid\/hyperliquid-beyond-generic-vms-the"/);
+});
+
+test("chain pages offer explicit reading order, without interrupting archive searches", async () => {
+  const { readingPaths } = await import("../app/reading-paths.ts");
+  for (const chain of ["EVM", "Solana"]) {
+    const route = `/blogs/${chain.toLowerCase()}`;
+    const html = (await (await render(route)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    const path = html.match(/<section class="reading-path"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+    assert.ok(path);
+    assert.match(path, /Start here/);
+    assert.match(path, /<details class="reading-order">/);
+    const list = path.match(/<ol>([\s\S]*?)<\/ol>/)?.[1];
+    assert.ok(list);
+    const hrefs = [...list.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]);
+    assert.deepEqual(hrefs.map(href => href.split("/p/")[1]), readingPaths[chain].slugs);
+    assert.ok(html.indexOf('class="reading-path"') < html.indexOf('class="blog-tools"'));
+    const filtered = (await (await render(`${route}?q=accounts`)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    assert.doesNotMatch(filtered, /class="reading-path"/);
+  }
+});
+
+test("a one-article chain stays simple while direct search URLs still work", async () => {
+  const html = (await (await render("/blogs/hyperliquid")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(html, /<h2>Start here<\/h2>/);
+  assert.doesNotMatch(html, /class="blog-tools"|class="blog-pagination"|class="reading-path"/);
+  const filtered = (await (await render("/blogs/hyperliquid?q=missing-post")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(filtered, /No articles found/);
+  assert.match(filtered, /id="article-search"/);
+  assert.match(filtered, /Clear filters/);
+});
+
+test("article summaries and resource labels do not promise nonexistent code", async () => {
+  const html = (await (await render("/blogs/solana?q=Architecture%20Account%20Model" )).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  const results = html.match(/<ul class="blog-results">([\s\S]*?)<\/ul>/)?.[1];
+  assert.ok(results);
+  assert.match(results, /class="blog-entry-description"/);
+  assert.doesNotMatch(results, /blog-code-link|github\.com/);
+  const evm = (await (await render("/blogs/evm?q=Internals%20Part%201")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(evm, /Article resources/);
+  assert.doesNotMatch(evm, />Example code/);
+  const token = (await (await render("/blogs/solana?q=Interest-Bearing")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(token, /Tokens &amp; extensions/);
+});
+
+test("course pages explain the project before the curriculum and show grounded previews", async () => {
+  for (const route of ["/bootcamps/evm-engineering", "/bootcamps/advanced-evm"]) {
+    const html = (await (await render(route)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    assert.ok(html.indexOf('id="course-overview-heading"') < html.indexOf('id="curriculum"'));
+    assert.match(html, /A question from the course/);
+    assert.match(html, /class="lesson-observation"/);
+    assert.doesNotMatch(html, /instructor side|Course journal|instructor\/|teacher|testPermitCreates/);
+    assert.doesNotMatch(html, /\$799|\$999|45-minute|daily private text support/i);
+    if (route.endsWith("evm-engineering")) {
+      assert.match(html, /fixed-ratio SimpleSwap/);
+      assert.match(html, /PostgreSQL/);
+      assert.match(html, /Static call/);
+      assert.match(html, /Original caller/);
+    } else {
+      assert.match(html, /In development/);
+      assert.match(html, /125 tokens/);
+      assert.match(html, /1,000 tokens/);
+      assert.match(html, /not a guarantee that a protocol is secure/);
+    }
+  }
 });

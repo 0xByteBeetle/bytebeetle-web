@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import type { Article } from "../content";
 import { ecosystems } from "../ecosystems";
 import { articleTopic, selectArticles, topicOptions, type ChainFilter, type SortOrder } from "./library-model";
@@ -11,8 +12,8 @@ const chains = [
   ...ecosystems.map(item => ({ ...item, value: item.label })),
 ] as const;
 
-export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initialSort }: {
-  articles: Article[]; chain: ChainFilter; initialQuery: string; initialTopic: string; initialSort: string;
+export function BlogLibrary({ articles, chain, introduction, initialQuery, initialTopic, initialSort }: {
+  articles: Article[]; chain: ChainFilter; introduction?: ReactNode; initialQuery: string; initialTopic: string; initialSort: string;
 }) {
   const scopedArticles = articles.filter((article) => chain === "all" || article.chain === chain);
   const topics = topicOptions(scopedArticles);
@@ -23,6 +24,7 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
   const results = selectArticles(scopedArticles, query, topic, sort);
   const visible = results.slice(0, visibleCount);
   const filtersActive = Boolean(query || topic);
+  const showTools = scopedArticles.length > 1 || filtersActive || sort !== "newest";
 
   // A copied URL or refresh restores the current filters, without a history
   // entry for every keystroke.
@@ -54,7 +56,8 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
           </a>
         ))}
       </nav>
-      <div className="blog-tools">
+      {!filtersActive && sort === "newest" && introduction}
+      {showTools && <div className="blog-tools">
         <div className="blog-search">
           <label htmlFor="article-search">Search articles</label>
           <div className="blog-search-field">
@@ -78,11 +81,11 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
             <option value="title">Title A–Z</option>
           </select>
         </div>
-      </div>
+      </div>}
       <div className="blog-results-heading">
-        <h2>{topic || (query ? "Search results" : "All articles")}</h2>
+        <h2>{topic || (query ? "Search results" : scopedArticles.length === 1 ? "Start here" : "All articles")}</h2>
         <div className="blog-result-status">
-          <span role="status" aria-live="polite">{results.length} {results.length === 1 ? "article" : "articles"}{query && ` matching “${query}”`}</span>
+          {showTools && <span role="status" aria-live="polite">{results.length} {results.length === 1 ? "article" : "articles"}{query && ` matching “${query}”`}</span>}
           {filtersActive && <button type="button" onClick={clearFilters}>Clear filters</button>}
         </div>
       </div>
@@ -93,9 +96,10 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
               <article className="blog-entry">
                 <div className="blog-entry-meta"><span>{article.chain}</span><span>{articleTopic(article)}</span></div>
                 <h3><a href={article.localHref ?? article.href} target={article.localHref ? undefined : "_blank"} rel={article.localHref ? undefined : "noreferrer"}>{article.title}<span className="blog-title-arrow" aria-hidden="true">{article.localHref ? "→" : "↗"}</span>{!article.localHref && <span className="blog-sr-only"> (opens on Substack in a new tab)</span>}</a></h3>
+                {article.description && <p className="blog-entry-description">{article.description}</p>}
                 <div className="blog-entry-bottom">
                   <span className="blog-entry-date">{article.date}</span>
-                  {article.solutionHref && <a className="blog-code-link" href={article.solutionHref} target="_blank" rel="noreferrer" aria-label={`View ${article.codeUpdated ? "updated" : "example"} code for ${article.title} on GitHub (opens in a new tab)`}><span aria-hidden="true">&lt;/&gt;</span> {article.codeUpdated ? "Updated example" : "Example code"} <span aria-hidden="true">↗</span></a>}
+                  {article.solutionHref && <a className="blog-code-link" href={article.solutionHref} target="_blank" rel="noreferrer" aria-label={`View ${article.codeUpdated ? "updated example" : "article resources"} for ${article.title} on GitHub (opens in a new tab)`}>{article.codeUpdated ? "Updated example" : "Article resources"} <span aria-hidden="true">↗</span></a>}
                 </div>
               </article>
             </li>
@@ -108,11 +112,11 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
           <button type="button" className="button button-primary" onClick={clearFilters}>Show all {chain === "all" ? "" : `${chain} `}articles</button>
         </div>
       )}
-      {results.length > 0 && <div className="blog-pagination">
+      {results.length > PAGE_SIZE && <div className="blog-pagination">
         <p>Showing {visible.length} of {results.length} articles</p>
         {visible.length < results.length && <button type="button" className="button button-secondary" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>Show {Math.min(PAGE_SIZE, results.length - visible.length)} more articles <span aria-hidden="true">↓</span></button>}
       </div>}
-      <noscript><p>Search and filters require JavaScript. Browse the complete archive on <a href="https://andreyobruchkov1996.substack.com/archive">Substack</a>.</p></noscript>
+      {showTools && <noscript><p>Search and filters require JavaScript. Browse the complete archive on <a href="https://andreyobruchkov1996.substack.com/archive">Substack</a>.</p></noscript>}
     </section>
   );
 }

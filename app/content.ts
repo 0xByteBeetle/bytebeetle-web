@@ -1,5 +1,6 @@
 import { substackArticles as generatedSubstackArticles } from "./substack-articles.generated";
 import type { Ecosystem } from "./ecosystems";
+import { articleDescriptions, articlesWithoutCode } from "./article-notes";
 
 export type Article = {
   title: string;
@@ -13,6 +14,7 @@ export type Article = {
   slug?: string;
   solutionHref?: string;
   codeUpdated?: boolean;
+  description?: string;
 };
 
 // Public posts that do not yet have an entry in the companion-code catalog.
@@ -35,7 +37,11 @@ const additionalPublishedArticles: Article[] = [
 export const substackArticles: Article[] = [
   ...generatedSubstackArticles,
   ...additionalPublishedArticles.filter(article => !generatedSubstackArticles.some(existing => existing.href === article.href)),
-];
+].map(article => ({
+  ...article,
+  description: article.slug ? articleDescriptions[article.slug] : undefined,
+  solutionHref: article.slug && articlesWithoutCode.has(article.slug) ? undefined : article.solutionHref,
+}));
 
 export const evmSubstackArticles = substackArticles.filter(
   (article) => article.chain === "EVM",

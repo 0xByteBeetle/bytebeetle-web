@@ -29,13 +29,15 @@
     .editorial-home .section-top > a { font-size: 14px; white-space: nowrap; text-decoration: none; }
     .editorial-home .section-top > a:hover { text-decoration: underline; }
     .editorial-home .article-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 44px; }
-    .editorial-home .metadata { font-size: 13px; font-weight: 550; letter-spacing: .035em; margin-bottom: 14px; }
+    .editorial-home .section-note { color: var(--color-text-muted); font-size: 16px; max-width: 650px; margin: -12px 0 32px; }
+    .editorial-home .article-grid article { display: flex; flex-direction: column; }
+    .editorial-home .metadata { font-size: 20px; font-weight: 550; letter-spacing: -.02em; margin-bottom: 16px; }
     .editorial-home .metadata span { color: var(--color-text-muted); font-weight: 400; letter-spacing: 0; margin-left: 10px; }
-    .editorial-home article h3 { font: 400 27px/1.2 var(--font-serif); letter-spacing: -.5px; margin-bottom: 14px; }
+    .editorial-home article h3 { font: 400 24px/1.25 var(--font-serif); letter-spacing: -.5px; margin-bottom: 14px; }
     .editorial-home article h3 a { text-decoration: none; }
     .editorial-home article h3 a:hover { text-decoration: underline; }
     .editorial-home article p { font-size: 16px; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 20px; }
-    .editorial-home .article-links { display: flex; gap: 22px; font-size: 14px; }
+    .editorial-home .article-links { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; margin-top: auto; }
     .editorial-home .article-links a { text-decoration: none; }
     .editorial-home .article-links a:hover { text-decoration: underline; }
     .editorial-home .article-links a:last-child { color: var(--color-text-muted); }
@@ -76,7 +78,7 @@
       .editorial-home .section-top { align-items: flex-start; gap: 16px; }
       .editorial-home .section-top > a { margin-top: 7px; font-size: 13px; }
       .editorial-home .article-grid { grid-template-columns: 1fr; gap: 32px; }
-      .editorial-home article h3 { font-size: 27px; max-width: 550px; }
+      .editorial-home article h3 { font-size: 24px; max-width: 550px; }
       .editorial-home article p { margin-bottom: 12px; }
       .editorial-home .metadata { margin-bottom: 10px; }
       .editorial-home .browse { margin-top: 30px; gap: 20px; }

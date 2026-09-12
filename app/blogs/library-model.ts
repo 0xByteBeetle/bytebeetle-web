@@ -8,7 +8,7 @@ export function articleTopic(article: Article): string {
   if (article.subject) return article.subject;
   const title = article.title.toLowerCase();
   if (article.chain === "Solana") {
-    if (/token|metadata|native zk/.test(title)) return "Tokens & extensions";
+    if (article.topic === "Token-2022" || /token|metadata|native zk|interest-bearing mint/.test(title)) return "Tokens & extensions";
     if (/borsh|zero-copy/.test(title)) return "Serialization & memory";
     if (/part\s*[456]|instructions and messages/.test(title)) return "Transactions & messages";
     return "Accounts & programs";

@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://learn.andreyobruchkov.com"),
-  title: "0xByteBeetle: Multichain Engineering Education",
+  title: "0xByteBeetle | Blockchain internals by Andrey Obruchkov",
   description:
-    "Notes, bootcamps, and practical experiments in multichain engineering by Andrey Obruchkov.",
+    "Deep dives into how blockchains work. Explore EVM, Solana, and Hyperliquid internals through articles, examples, and bootcamps by Andrey Obruchkov.",
   icons: {
     icon: "/andrey-logo.jpeg",
     shortcut: "/andrey-logo.jpeg",

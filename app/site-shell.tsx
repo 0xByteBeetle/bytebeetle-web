@@ -4,7 +4,6 @@ import { ecosystems } from "./ecosystems";
 
 const navigation = [
   { href: "/bootcamps", label: "Bootcamps", key: "bootcamps" },
-  { href: "/resources", label: "Resources", key: "resources" },
   { href: "/about", label: "About", key: "about" },
   { href: "/contact", label: "Contact", key: "contact" },
 ];
@@ -17,7 +16,7 @@ export function SiteHeader({ active }: { active?: string }) {
       </Link>
 
       <nav className="main-nav" aria-label="Main navigation">
-        <a href="/" aria-current={active === "home" ? "page" : undefined}>Home</a>
+        <Link href="/" aria-current={active === "home" ? "page" : undefined}>Home</Link>
         <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
         </a>
@@ -35,7 +34,7 @@ export function SiteHeader({ active }: { active?: string }) {
       <details className="mobile-menu">
         <summary>Menu</summary>
         <nav aria-label="Mobile navigation">
-          <a href="/" aria-current={active === "home" ? "page" : undefined}>Home</a>
+          <Link href="/" aria-current={active === "home" ? "page" : undefined}>Home</Link>
           <a href="/blogs" aria-current={active?.startsWith("blogs") ? "page" : undefined}>
             Blogs
           </a>
@@ -63,8 +62,8 @@ export function SiteFooter() {
         <EmailLink />
         <a href="https://andreyobruchkov1996.substack.com" target="_blank" rel="noreferrer">Substack ↗</a>
         <a href="https://github.com/0xByteBeetle" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a href="/resources">Resources</a>
         <a href="/contact">Contact</a>
-        <a href="/inbox">Owner inbox</a>
       </div>
     </footer>
   );

@@ -33,9 +33,9 @@ export default function ResourcesPage() {
 
       <section className="resource-section">
         <div className="library-intro">
-          <p className="eyebrow">Runnable companions</p>
+          <p className="eyebrow">Article resources</p>
           <h2>Code connected to the writing.</h2>
-          <p>The blog companion is public and organized article by article. Course solutions remain separate from student material and are not published here.</p>
+          <p>The companion repository is organized article by article. Each folder explains its source snippets, available examples, and verification status. Course solutions remain separate from student material.</p>
         </div>
         <div className="resource-grid">
           {ownedResources.map((resource) => (
