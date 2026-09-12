@@ -144,13 +144,32 @@ test("Hyperliquid lists only the published post, supports topic search, and has 
     assert.ok(results, path);
     assert.equal((results.match(/class="blog-entry"/g) ?? []).length, 1);
     assert.match(results, /Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1/);
-    assert.match(results, /https:\/\/andreyobruchkov1996.substack.com\/p\/hyperliquid-beyond-generic-vms-the/);
+    assert.match(results, /href="\/blogs\/hyperliquid\/hyperliquid-beyond-generic-vms-the"/);
+    assert.doesNotMatch(results, /target="_blank"/);
     assert.match(results, /Architecture/);
     assert.doesNotMatch(results, /blog-code-link|Part 2|draft|Solana|EVM internals/);
     if (path.startsWith("/blogs/hyperliquid")) assert.doesNotMatch(html, /class="blog-medium"/);
   }
   const resources = await (await render("/resources")).text();
   assert.doesNotMatch(resources, /Implementations behind the explanations|Source reading|class="source-list"/);
+});
+
+test("the native article renders its full body, original link, code, and local images", async () => {
+  const response = await render("/blogs/hyperliquid/hyperliquid-beyond-generic-vms-the");
+  assert.equal(response.status, 200);
+  const html = (await response.text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(html, /data-article-body/);
+  assert.match(html, /If you’ve been following my recent series/);
+  assert.match(html, /pub struct ClearinghouseState/);
+  assert.match(html, /Read on Substack/);
+  assert.match(html, /href="https:\/\/andreyobruchkov1996.substack.com\/p\/hyperliquid-beyond-generic-vms-the"/);
+  assert.equal((html.match(/class="reading-image-open"/g) ?? []).length, 3);
+  assert.equal((html.match(/<pre\b/g) ?? []).length, 2);
+  assert.equal((html.match(/<h2\b/g) ?? []).length, 5);
+  assert.equal((html.match(/<h3\b/g) ?? []).length, 5);
+  assert.match(html, /aria-label="Copy rust code"/);
+  assert.match(html, /aria-label="Copy jsonc code"/);
+  assert.doesNotMatch(html, /<iframe|substackcdn.com|<hr\b/);
 });
 
 test("ships finished project metadata", async () => {

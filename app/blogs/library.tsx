@@ -92,7 +92,7 @@ export function BlogLibrary({ articles, chain, initialQuery, initialTopic, initi
             <li key={article.href}>
               <article className="blog-entry">
                 <div className="blog-entry-meta"><span>{article.chain}</span><span>{articleTopic(article)}</span></div>
-                <h3><a href={article.href} target="_blank" rel="noreferrer">{article.title}<span className="blog-title-arrow" aria-hidden="true">↗</span><span className="blog-sr-only"> (opens on Substack in a new tab)</span></a></h3>
+                <h3><a href={article.localHref ?? article.href} target={article.localHref ? undefined : "_blank"} rel={article.localHref ? undefined : "noreferrer"}>{article.title}<span className="blog-title-arrow" aria-hidden="true">{article.localHref ? "→" : "↗"}</span>{!article.localHref && <span className="blog-sr-only"> (opens on Substack in a new tab)</span>}</a></h3>
                 <div className="blog-entry-bottom">
                   <span className="blog-entry-date">{article.date}</span>
                   {article.solutionHref && <a className="blog-code-link" href={article.solutionHref} target="_blank" rel="noreferrer" aria-label={`View ${article.codeUpdated ? "updated" : "example"} code for ${article.title} on GitHub (opens in a new tab)`}><span aria-hidden="true">&lt;/&gt;</span> {article.codeUpdated ? "Updated example" : "Example code"} <span aria-hidden="true">↗</span></a>}

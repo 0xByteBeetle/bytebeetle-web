@@ -4,6 +4,7 @@ import type { Ecosystem } from "./ecosystems";
 export type Article = {
   title: string;
   href: string;
+  localHref?: string;
   date: string;
   topic: Ecosystem | "Token-2022";
   chain: Ecosystem;
@@ -20,6 +21,7 @@ const additionalPublishedArticles: Article[] = [
   {
     title: "Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1",
     href: "https://andreyobruchkov1996.substack.com/p/hyperliquid-beyond-generic-vms-the",
+    localHref: "/blogs/hyperliquid/hyperliquid-beyond-generic-vms-the",
     date: "September 2026",
     topic: "Hyperliquid",
     chain: "Hyperliquid",

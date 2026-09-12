@@ -1,0 +1,918 @@
+{
+  "title": "Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1",
+  "sourceUrl": "https://andreyobruchkov1996.substack.com/p/hyperliquid-beyond-generic-vms-the",
+  "publishedAt": "Sun, 06 Sep 2026 15:26:50 GMT",
+  "headings": [
+    {
+      "id": "the-l1-dilemma-why-build-a-sovereign-chain",
+      "title": "The L1 Dilemma: Why Build a Sovereign Chain?",
+      "level": 2
+    },
+    {
+      "id": "the-dual-engine-architecture-hypercore-hyperevm",
+      "title": "The Dual-Engine Architecture: HyperCore & HyperEVM",
+      "level": 2
+    },
+    {
+      "id": "engine-a-hypercore-the-financial-state-machine",
+      "title": "Engine A: HyperCore - The Financial State Machine",
+      "level": 3
+    },
+    {
+      "id": "engine-b-hyperevm-the-general-purpose-composability",
+      "title": "Engine B: HyperEVM - The General Purpose Composability",
+      "level": 3
+    },
+    {
+      "id": "the-clearinghouse-unified-state-native-cross-margin",
+      "title": "The Clearinghouse: Unified State & Native Cross-Margin",
+      "level": 2
+    },
+    {
+      "id": "account-types-bridging-the-ux-gap-with-agent-keys",
+      "title": "Account Types: Bridging the UX Gap with Agent Keys",
+      "level": 2
+    },
+    {
+      "id": "the-l1-wallet-eip-712-signatures",
+      "title": "The L1 Wallet (EIP-712 Signatures)",
+      "level": 3
+    },
+    {
+      "id": "agent-keys",
+      "title": "Agent Keys",
+      "level": 3
+    },
+    {
+      "id": "the-security-boundary",
+      "title": "The Security Boundary",
+      "level": 3
+    },
+    {
+      "id": "summary",
+      "title": "Summary",
+      "level": 2
+    }
+  ],
+  "body": [
+    {
+      "type": "blockquote",
+      "children": [
+        {
+          "type": "p",
+          "children": [
+            "If you’ve been following my recent series on EVM storage slots and the granular mechanics of Solana’s Token-2022 extensions, you know that optimizing smart contract architecture is ultimately an endless battle against the underlying execution environment. Whether we are writing Solidity, Vyper, or Rust, we spend our careers trying to squeeze maximum performance out of systems designed to do a million different things."
+          ]
+        },
+        {
+          "type": "p",
+          "children": [
+            "But what if you didn’t have to compromise? What if, instead of fighting the virtual machine, you built a Layer 1 blockchain from the ground up to do exactly ",
+            {
+              "type": "em",
+              "children": [
+                "one"
+              ]
+            },
+            " thing perfectly?"
+          ]
+        },
+        {
+          "type": "p",
+          "children": [
+            "This is the premise of ",
+            {
+              "type": "strong",
+              "children": [
+                "Hyperliquid"
+              ]
+            },
+            "."
+          ]
+        },
+        {
+          "type": "p",
+          "children": [
+            "In Part 1 of this new series, we are going to step away from generic execution environments and zoom out to look at the macro-architecture of an App-Chain. We’ll explore the engineering dilemma that forced its creation, how its state management differs fundamentally from Ethereum and Solana, and break down the unique dual-engine design that brings general composability back to a specialized network."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "id": "the-l1-dilemma-why-build-a-sovereign-chain",
+      "children": [
+        "The L1 Dilemma: Why Build a Sovereign Chain?"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "To understand ",
+        {
+          "type": "em",
+          "children": [
+            "what"
+          ]
+        },
+        " Hyperliquid is, we have to look at the specific engineering problem it was built to solve: ",
+        {
+          "type": "strong",
+          "children": [
+            "creating a fully on-chain Central Limit Order Book (CLOB) that can mathematically rival the latency of centralized exchanges."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "When protocol engineers attempt to build high-frequency trading engines on existing blockchains, they inevitably hit a wall at the state-transition layer."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "The Ethereum & Rollup Bottleneck"
+          ]
+        },
+        " The EVM is a global, sequential state machine. Every transaction must be processed one after the other. More importantly, general-purpose VMs carry a massive “latency tax” because they must dynamically meter gas for every computation."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "When a user places an order on a generic rollup, the VM must load the contract, parse the calldata, execute generic opcodes, and write to the state trie. For a market maker trying to update their quotes 1,000 times a second to avoid arbitrage, dynamically metering generic bytecode is incredibly inefficient."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "The Solana Bottleneck"
+          ]
+        },
+        " Solana seemingly solves the sequential problem via the Sealevel parallel runtime. By requiring transactions to declare their read/write accounts upfront, the SVM can process non-overlapping transactions simultaneously."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "However, an order book inherently requires shared state. If a thousand users are trading the ",
+        {
+          "type": "code",
+          "children": [
+            "SOL/USDC"
+          ]
+        },
+        " pair, they must all mutate the exact same market account (the PDA). Because they are fighting over the same data structure in memory, this creates ",
+        {
+          "type": "strong",
+          "children": [
+            "state contention"
+          ]
+        },
+        ". The parallelization engine degrades into a single-lane highway, hard-capping the maximum theoretical throughput for that specific market and forcing sequential execution anyway."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "The App-Chain Solution"
+          ]
+        },
+        " Hyperliquid was invented because the founders realized a fundamental architectural truth: ",
+        {
+          "type": "em",
+          "children": [
+            "To achieve sub-millisecond finality and handle 100,000+ orders per second, the order book cannot live inside a smart contract. ",
+            {
+              "type": "a",
+              "href": "https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/order-book",
+              "children": [
+                "The order book must BE the blockchain."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "id": "the-dual-engine-architecture-hypercore-hyperevm",
+      "children": [
+        "The Dual-Engine Architecture: HyperCore & HyperEVM"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "When you hardcode a state machine to only understand order books, you solve the latency problem beautifully. But you immediately create a new one: ",
+        {
+          "type": "strong",
+          "children": [
+            "the loss of composability."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "If the Layer 1 only understands trading, how do developers build a yield aggregator, a custom lending market, or a decentralized options protocol? Historically, App-Chains are isolated islands. You get blazing speed, but you lose the permissionless innovation of DeFi."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Hyperliquid solves this tradeoff with a unified, dual-engine architecture running in parallel, both secured simultaneously by a single, highly-optimized consensus mechanism called ",
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "a",
+              "href": "https://hyperliquid-co.gitbook.io/wiki/architecture/hyperbft",
+              "children": [
+                "HyperBFT"
+              ]
+            }
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "h3",
+      "id": "engine-a-hypercore-the-financial-state-machine",
+      "children": [
+        "Engine A: HyperCore - The Financial State Machine"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "This is the beating heart of the network. As we established, ",
+        {
+          "type": "strong",
+          "children": [
+            "HyperCore is not a smart contract environment."
+          ]
+        },
+        " You cannot deploy Solidity, Vyper, or custom Rust programs to it."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Instead, it is a closed, highly specialized state machine built natively into the validator software. The L1 only understands a strict set of native operations:"
+      ]
+    },
+    {
+      "type": "ul",
+      "children": [
+        {
+          "type": "li",
+          "children": [
+            {
+              "type": "p",
+              "children": [
+                "Placing and cancelling orders."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "children": [
+            {
+              "type": "p",
+              "children": [
+                "Transferring assets (Spot)."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "children": [
+            {
+              "type": "p",
+              "children": [
+                "Managing collateral and processing liquidations (Perps)."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Because the rules of the Clearinghouse (margin management, will be explained shortly) and the Matching Engine are baked directly into the node software, the system can execute complex matching logic entirely in memory. It never has to load, verify, or meter gas for arbitrary bytecode. This is what unlocks the ",
+        {
+          "type": "a",
+          "href": "https://hyperliquid.gitbook.io/hyperliquid-docs/about-hyperliquid/hyperliquid-101-for-non-crypto-audiences",
+          "children": [
+            "200,000+ orders per second throughput"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "h3",
+      "id": "engine-b-hyperevm-the-general-purpose-composability",
+      "children": [
+        "Engine B: HyperEVM - The General Purpose Composability"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "To bring permissionless innovation back to the ecosystem, Hyperliquid is introducing the ",
+        {
+          "type": "strong",
+          "children": [
+            "HyperEVM"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Running right alongside HyperCore, the HyperEVM is a fully functional Ethereum Virtual Machine environment. Here, you ",
+        {
+          "type": "em",
+          "children": [
+            "can"
+          ]
+        },
+        " deploy standard Solidity smart contracts, just as you would on Arbitrum, Base, or Optimism, and users pay gas for execution."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "But the true architectural magic lies in ",
+        {
+          "type": "strong",
+          "children": [
+            "native interoperability"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "The HyperEVM and HyperCore are not two separate blockchains connected by a clunky bridge. They are two execution environments sharing the exact same block space and consensus layer. This allows smart contracts deployed on the HyperEVM to natively read the state of the HyperCore order book via ",
+        {
+          "type": "strong",
+          "children": [
+            "specialized precompiles"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "Developer Note:"
+          ]
+        },
+        " Imagine writing a standard Solidity lending contract. Instead of relying on some lagging oracle to determine a user’s health score, your contract can use a precompile to synchronously query that user’s exact cross-margin perpetual position directly from the HyperCore L1 in real-time."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "It is the holy grail of DeFi architecture: bringing the sub-millisecond speed of a centralized exchange together with the permissionless, Turing-complete composability of Ethereum."
+      ]
+    },
+    {
+      "type": "figure",
+      "children": [
+        {
+          "type": "image",
+          "src": "/articles/hyperliquid-part-1/a055e73d-60af-4bf1-9af3-7423449f1a54_1510x584.png",
+          "sourceSrc": "https://substack-post-media.s3.amazonaws.com/public/images/a055e73d-60af-4bf1-9af3-7423449f1a54_1510x584.png",
+          "alt": "",
+          "width": 1456,
+          "height": 563
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "id": "the-clearinghouse-unified-state-native-cross-margin",
+      "children": [
+        "The Clearinghouse: Unified State & Native Cross-Margin"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "If HyperCore is the engine, the ",
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "a",
+              "href": "https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/clearinghouse",
+              "children": [
+                "Clearinghouse"
+              ]
+            }
+          ]
+        },
+        " is the database."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "In traditional finance, a clearinghouse is a centralized entity that sits between buyers and sellers to guarantee trades, manage margin requirements, and execute liquidations. In traditional DeFi, this role is awkwardly duct-taped together using fragmented smart contracts."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Let’s look at the generic VM approach to margin: If you want to trade Spot and Perps on an Ethereum rollup, you are dealing with entirely separate state islands. Your Spot assets sit in a Uniswap liquidity pool or your wallet. Your Perp margin sits inside a specific vault contract. If you own 1 Spot BTC and want to use it as collateral to short ETH, you have to execute multiple transactions: borrow USDC against your BTC on some platform, bridge it to a perp DEX, and deposit it into their margin contract."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "This state fragmentation leads to massive capital inefficiency and smart contract risk."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "The Hyperliquid Solution: The L1 as the Clearinghouse"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "In Hyperliquid, the Clearinghouse isn’t a smart contract, it ",
+        {
+          "type": "em",
+          "children": [
+            "is"
+          ]
+        },
+        " the fundamental state tree of the HyperCore L1. Because the developers control the actual execution client, they built a unified data structure that natively understands a user’s portfolio as a single, global entity. To see exactly how this unified state is managed, we can look at the data structures required to deserialize the L1’s ",
+        {
+          "type": "code",
+          "children": [
+            "clearinghouseState"
+          ]
+        },
+        " via the API."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Here is the actual Rust representation of a user’s Clearinghouse state, as seen in standard ",
+        {
+          "type": "a",
+          "href": "https://github.com/elijahhampton/rhyperliquid/blob/cde70ba732c358f52eef2e9f8903cd1c5fa03b04/src/types/info/user.rs#L648",
+          "children": [
+            "Hyperliquid SDKs"
+          ]
+        },
+        ":"
+      ]
+    },
+    {
+      "type": "codeblock",
+      "language": "rust",
+      "text": "use serde::{Deserialize, Serialize};\n\n// The root state object returned by the L1 Clearinghouse\n#[derive(Serialize, Deserialize, Debug)]\npub struct ClearinghouseState {\n    #[serde(rename = \"marginSummary\")]\n    pub margin_summary: MarginSummary,\n    \n    #[serde(rename = \"crossMarginSummary\")]\n    pub cross_margin_summary: MarginSummary,\n    \n    #[serde(rename = \"crossMaintenanceMarginUsed\")]\n    pub cross_maintenance_margin_used: String,\n    \n    pub withdrawable: String,\n    \n    // The unified array of all active market positions\n    #[serde(rename = \"assetPositions\")]\n    pub asset_positions: Vec<AssetPosition>,\n    \n    pub time: u64,\n}\n\n// Global risk parameters calculated natively in memory by the node\n#[derive(Serialize, Deserialize, Debug)]\npub struct MarginSummary {\n    #[serde(rename = \"accountValue\")]\n    pub account_value: String,      // Total portfolio value (Spot + Perp PnL)\n    #[serde(rename = \"totalNtlPos\")]\n    pub total_ntl_pos: String,      // Total notional position size\n    #[serde(rename = \"totalRawUsd\")]\n    pub total_raw_usd: String,      // Raw USDC balance\n    #[serde(rename = \"totalMarginUsed\")]\n    pub total_margin_used: String,  // Aggregate margin locked\n}\n\n// An individual position object within the state\n#[derive(Serialize, Deserialize, Debug)]\npub struct AssetPosition {\n    pub position: Position,\n    #[serde(rename = \"type\")]\n    pub position_type: String,\n}\n\n#[derive(Serialize, Deserialize, Debug)]\npub struct Position {\n    pub coin: String,         // Asset ticker (e.g., \"BTC\")\n    pub szi: String,          // Size of the position\n    pub leverage: Leverage,   \n    #[serde(rename = \"entryPx\")]\n    pub entry_px: String,     // Entry Price\n    #[serde(rename = \"positionValue\")]\n    pub position_value: String,\n    #[serde(rename = \"unrealizedPnl\")]\n    pub unrealized_pnl: String,\n    #[serde(rename = \"marginUsed\")]\n    pub margin_used: String,\n}\n\n#[derive(Serialize, Deserialize, Debug)]\npub struct Leverage {\n    #[serde(rename = \"type\")]\n    pub leverage_type: String,\n    pub value: u32,\n}"
+    },
+    {
+      "type": "p",
+      "children": [
+        "Notice the critical architectural difference here: the ",
+        {
+          "type": "code",
+          "children": [
+            "MarginSummary"
+          ]
+        },
+        " fields (",
+        {
+          "type": "code",
+          "children": [
+            "account_value"
+          ]
+        },
+        ", ",
+        {
+          "type": "code",
+          "children": [
+            "total_margin_used"
+          ]
+        },
+        ") are pre-calculated at the root level of the struct. The developer doesn’t have to write a smart contract to aggregate a user’s collateral across a dozen fragmented liquidity pools. The L1 execution client does the heavy lifting natively on every tick."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "Protocol-Level Cross Margin & Portfolio Abstraction"
+          ]
+        },
+        " This unified architecture unlocks true, protocol-level cross-margin."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Through Hyperliquid’s ",
+        {
+          "type": "strong",
+          "children": [
+            "Portfolio Margin"
+          ]
+        },
+        " account abstraction, the L1 state machine unifies your spot holdings and perpetual positions into a single global balance. If you bridge USDC to Hyperliquid and buy 1 Spot BTC, the L1 immediately recognizes that asset’s USD value."
+      ]
+    },
+    {
+      "type": "h2",
+      "id": "account-types-bridging-the-ux-gap-with-agent-keys",
+      "children": [
+        "Account Types: Bridging the UX Gap with Agent Keys"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "When you build a sovereign App-Chain, you usually introduce a massive point of friction: the wallet. Historically, if you wanted to trade on other chains, you had to download a new proprietary wallet extension, manage a new seed phrase, and learn a completely new address format."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Hyperliquid bypassed this UX nightmare entirely. Your primary account on Hyperliquid is simply your standard Ethereum address."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "But how does a non-EVM execution layer securely verify transactions signed by an Ethereum wallet? And more importantly, how do you solve the high-frequency trading problem, because you certainly cannot click “Sign” in MetaMask a thousand times a second."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "The answer lies in two brilliant architectural choices: ",
+        {
+          "type": "strong",
+          "children": [
+            "EIP-712 Native Integration"
+          ]
+        },
+        " and the ",
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "a",
+              "href": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets#api-wallets",
+              "children": [
+                "Agent Key Architecture"
+              ]
+            }
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "h3",
+      "id": "the-l1-wallet-eip-712-signatures",
+      "children": [
+        "The L1 Wallet (EIP-712 Signatures)"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Hyperliquid’s L1 natively understands the ",
+        {
+          "type": "code",
+          "children": [
+            "secp256k1"
+          ]
+        },
+        " elliptic curve used by Ethereum. When you interact with the exchange via MetaMask, you aren’t broadcasting a standard Layer 1 Ethereum transaction. Instead, you are signing a structured data payload using the ",
+        {
+          "type": "strong",
+          "children": [
+            "EIP-712 standard"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "The HyperCore validator nodes are explicitly programmed to take these EIP-712 signatures, recover the Ethereum public address of the signer, and authenticate the L1 state mutation (like bridging funds or withdrawing)."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "This EIP-712 address acts as your ",
+        {
+          "type": "strong",
+          "children": [
+            "Root Authority Key"
+          ]
+        },
+        ". While it delegates trading permissions to temporary Agent Keys (explained shortly) , the HyperCore L1 strictly requires signatures from this Main Wallet for any critical state mutations, such as withdrawing funds or transferring assets, effectively acting as the secure vault for your underlying capital."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Wallet overview and all the possible actions can be found ",
+        {
+          "type": "a",
+          "href": "https://app.hyperliquid.xyz/",
+          "children": [
+            "here"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "h3",
+      "id": "agent-keys",
+      "children": [
+        "Agent Keys"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Using EIP-712 is great for deposits and withdrawals, but it creates a fatal bottleneck for trading. If a bot needs to execute a complex grid-trading strategy, waiting for a user to manually approve a signature prompt for every single order is impossible."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Hyperliquid solves this by allowing users to delegate strict, scoped permissions to a secondary, localized keypair known as an ",
+        {
+          "type": "strong",
+          "children": [
+            "Agent Key"
+          ]
+        },
+        "."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Here is how the architecture works:"
+      ]
+    },
+    {
+      "type": "ol",
+      "children": [
+        {
+          "type": "li",
+          "children": [
+            {
+              "type": "p",
+              "children": [
+                {
+                  "type": "strong",
+                  "children": [
+                    "Key Generation:"
+                  ]
+                },
+                " Your bot (or the web UI) generates a fresh, random cryptographic private/public key pair locally in memory. This is the Agent."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "children": [
+            {
+              "type": "p",
+              "children": [
+                {
+                  "type": "strong",
+                  "children": [
+                    "The Delegation Action:"
+                  ]
+                },
+                " Your Main L1 Wallet (via MetaMask) signs a specific L1 Action called ",
+                {
+                  "type": "code",
+                  "children": [
+                    "ApproveAgent"
+                  ]
+                },
+                ". This payload tells the HyperCore state machine: ",
+                {
+                  "type": "em",
+                  "children": [
+                    "“I authorize this new Agent public key to execute trades on my behalf.”"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "children": [
+            {
+              "type": "p",
+              "children": [
+                {
+                  "type": "strong",
+                  "children": [
+                    "Local Signing:"
+                  ]
+                },
+                " From that point on, your bot uses the Agent’s private key to sign the actual buy and sell orders locally in microseconds, entirely bypassing MetaMask."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Here is what the raw ",
+        {
+          "type": "code",
+          "children": [
+            "ApproveAgent"
+          ]
+        },
+        " action payload looks like when sent to the L1 (Image attached above):"
+      ]
+    },
+    {
+      "type": "codeblock",
+      "language": "jsonc",
+      "text": "{\n  \"action\": {\n    \"type\": \"approveAgent\",\n    \"hyperliquidChain\": \"Mainnet\",\n    \"signatureChainId\": \"0xa4b1\", // Arbitrum One\n    \"agentAddress\": \"0xYourGeneratedAgentPublicKey...\",\n    \"agentName\": \"0xByteBeetle_GridBot_v1\"\n  },\n  \"nonce\": 1713563456000,\n  \"signature\": \"0xSignatureFromMainL1Wallet...\"\n}"
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "Example:"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "you can find ",
+        {
+          "type": "a",
+          "href": "https://app.hyperliquid.xyz/API",
+          "children": [
+            "here"
+          ]
+        },
+        " the option to generate wallet agent."
+      ]
+    },
+    {
+      "type": "figure",
+      "children": [
+        {
+          "type": "image",
+          "src": "/articles/hyperliquid-part-1/1d7a2a43-82ec-417b-ae81-0fb2f0ce9f04_3022x724.png",
+          "sourceSrc": "https://substack-post-media.s3.amazonaws.com/public/images/1d7a2a43-82ec-417b-ae81-0fb2f0ce9f04_3022x724.png",
+          "alt": "",
+          "width": 1456,
+          "height": 349
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            "Example of message signing:"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "Shows the EIP-712 signature"
+      ]
+    },
+    {
+      "type": "figure",
+      "children": [
+        {
+          "type": "image",
+          "src": "/articles/hyperliquid-part-1/671af9bb-cecc-411e-87d0-e802deb127a3_780x998.png",
+          "sourceSrc": "https://substack-post-media.s3.amazonaws.com/public/images/671af9bb-cecc-411e-87d0-e802deb127a3_780x998.png",
+          "alt": "",
+          "width": 780,
+          "height": 998
+        }
+      ]
+    },
+    {
+      "type": "h3",
+      "id": "the-security-boundary",
+      "children": [
+        "The Security Boundary"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "The genius of the Agent Key architecture is its scoped authority."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "When the HyperCore L1 receives an order signed by an Agent, it checks the state machine to verify that the Main Wallet delegated authority to it. If verified, the order is executed."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "However, ",
+        {
+          "type": "strong",
+          "children": [
+            "Agents are mathematically restricted to trading."
+          ]
+        },
+        " If a hacker manages to steal your bot’s Agent private key from your server, the worst they can do is place bad trades. They cannot withdraw your USDC, transfer your spot assets, or change your account settings (Take a look at the note under the API in the first image). The L1 state machine will strictly reject any withdrawal Action signed by an Agent Key. those critical state mutations require a signature directly from the Main L1 Wallet."
+      ]
+    },
+    {
+      "type": "h2",
+      "id": "summary",
+      "children": [
+        "Summary"
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "By decoupling the trading engine from a generic VM and baking it directly into the state machine, Hyperliquid solves the latency and state contention problems at the root architectural level. Furthermore, by heavily utilizing EIP-712 and Agent Keys, it manages to provide the blazing speed of a centralized exchange without sacrificing the self-custody and familiar UX of the EVM ecosystem."
+      ]
+    },
+    {
+      "type": "p",
+      "children": [
+        "We have fundamentally shifted from thinking about smart contract optimizations to thinking about protocol-level memory management and native API actions."
+      ]
+    }
+  ],
+  "imageCount": 3,
+  "codeBlockCount": 2
+}
