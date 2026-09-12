@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { articleTopic, selectArticles, topicOptions } from "../app/blogs/library-model.ts";
+import { articlePublicationDate, articleTopic, selectArticles, topicOptions } from "../app/blogs/library-model.ts";
 
 const source = await readFile(new URL("../app/substack-articles.generated.ts", import.meta.url), "utf8");
 const catalog = JSON.parse(source.slice(source.indexOf("= [") + 2).trim().replace(/;$/, ""));
@@ -73,4 +73,46 @@ test("editorial notes cover the published catalog without inventing article reco
   assert.deepEqual(Object.keys(articleDescriptions).sort(), publishedSlugs.sort());
   assert.ok(Object.values(articleDescriptions).every(description => description.length > 40 && description.length < 190));
   assert.ok([...articlesWithoutCode].every(slug => publishedSlugs.includes(slug)));
+});
+
+test("publication sorting uses the original timestamps, including posts on the same day", () => {
+  assert.ok(catalog.every(article => Number.isFinite(Date.parse(article.publishedAt))));
+  const first = catalog.find(article => article.slug.endsWith("part-1-83a93c618257"));
+  assert.equal(first.publishedAt, "2025-07-01T07:29:23.265Z");
+  assert.equal(articlePublicationDate(first), "Jul 1, 2025");
+  const sameDay = catalog.filter(article => article.publishedAt.startsWith("2025-11-08"));
+  assert.ok(sameDay.length > 20);
+  const shuffled = [...sameDay].sort((a, b) => a.title.localeCompare(b.title));
+  for (const sort of ["newest", "oldest"]) {
+    const result = selectArticles(shuffled, "", "", sort);
+    for (let index = 1; index < result.length; index++) {
+      const delta = Date.parse(result[index].publishedAt) - Date.parse(result[index - 1].publishedAt);
+      assert.ok(sort === "newest" ? delta < 0 : delta > 0);
+    }
+  }
+  assert.equal(articlePublicationDate({ ...first, publishedAt: undefined }), "July 2025");
+});
+
+test("numbered series resolve in part order and never consume standalone articles", async () => {
+  const { articleSeries, resolveSeries, articleSeriesPosition } = await import("../app/reading-paths.ts");
+  const hyperliquid = { slug: "hyperliquid-beyond-generic-vms-the", chain: "Hyperliquid", title: "Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1" };
+  const all = [...catalog, hyperliquid];
+  const assigned = articleSeries.flatMap(series => {
+    const ordered = resolveSeries(series, [...all].reverse());
+    assert.deepEqual(ordered.map(article => article.slug), series.slugs);
+    ordered.forEach((article, index) => {
+      assert.match(article.title, new RegExp(`part\\s*${index + 1}\\b`, "i"));
+      assert.equal(articleSeriesPosition(article).part, index + 1);
+    });
+    return ordered;
+  });
+  assert.equal(articleSeries.length, 5);
+  assert.equal(assigned.length, 14);
+  assert.equal(new Set(assigned.map(article => article.slug)).size, 14);
+  const standalone = all.filter(article => !articleSeriesPosition(article));
+  assert.equal(standalone.length, 40);
+  assert.equal(standalone.length + assigned.length, all.length);
+  assert.ok(standalone.some(article => article.slug === "architecting-high-performance-solana"));
+  assert.equal(articleSeriesPosition({ ...hyperliquid, chain: "EVM" }), undefined);
+  assert.throws(() => resolveSeries(articleSeries[0], []), /unpublished or missing/);
 });

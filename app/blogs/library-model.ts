@@ -3,6 +3,19 @@ import type { Article } from "../content";
 export type ChainFilter = "all" | Article["chain"];
 export type SortOrder = "newest" | "oldest" | "title";
 
+export function articleTimestamp(article: Article): number {
+  const timestamp = article.publishedAt ? Date.parse(article.publishedAt) : NaN;
+  // Older alternate-publication records still have month-only dates.
+  return Number.isFinite(timestamp) ? timestamp : Date.parse(`1 ${article.date} UTC`);
+}
+
+export function articlePublicationDate(article: Article): string {
+  if (!article.publishedAt) return article.date;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short", day: "numeric", year: "numeric", timeZone: "UTC",
+  }).format(new Date(articleTimestamp(article)));
+}
+
 // Labels describe the subjects named in the original article titles.
 export function articleTopic(article: Article): string {
   if (article.subject) return article.subject;
@@ -30,9 +43,8 @@ export function selectArticles(articles: Article[], query: string, topic: string
     return (!topic || label === topic) && words.every((word) => searchable.includes(word));
   });
   if (sort === "title") return matches.sort((a, b) => a.title.localeCompare(b.title, "en"));
-  // Preserve the source catalog's order within each publication month.
-  matches.sort((a, b) => Date.parse(`1 ${b.date} UTC`) - Date.parse(`1 ${a.date} UTC`));
-  return sort === "oldest" ? matches.reverse() : matches;
+  const direction = sort === "oldest" ? 1 : -1;
+  return matches.sort((a, b) => direction * (articleTimestamp(a) - articleTimestamp(b)) || a.href.localeCompare(b.href));
 }
 
 export function topicOptions(articles: Article[]) {

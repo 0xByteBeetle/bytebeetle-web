@@ -7,6 +7,7 @@ export type Article = {
   href: string;
   localHref?: string;
   date: string;
+  publishedAt?: string;
   topic: Ecosystem | "Token-2022";
   chain: Ecosystem;
   subject?: string;
@@ -25,6 +26,7 @@ const additionalPublishedArticles: Article[] = [
     href: "https://andreyobruchkov1996.substack.com/p/hyperliquid-beyond-generic-vms-the",
     localHref: "/blogs/hyperliquid/hyperliquid-beyond-generic-vms-the",
     date: "September 2026",
+    publishedAt: "2026-09-06T15:26:50.000Z",
     topic: "Hyperliquid",
     chain: "Hyperliquid",
     subject: "Architecture",

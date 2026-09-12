@@ -393,3 +393,68 @@ test("course pages explain the project before the curriculum and show grounded p
     }
   }
 });
+
+test("All articles starts with expandable published series and separates standalone deep dives", async () => {
+  const { articleSeries } = await import("../app/reading-paths.ts");
+  const html = (await (await render("/blogs")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(html, /class="blog-library combined-library"/);
+  assert.match(html, /<a href="\/blogs" aria-current="page">Browse series<\/a>/);
+  assert.match(html, /href="\/blogs\?view=latest"/);
+  assert.equal((html.match(/class="series-row"/g) ?? []).length, 5);
+  assert.equal((html.match(/<details class="series-disclosure">/g) ?? []).length, 5);
+  assert.match(html, /Individual deep dives/);
+  assert.doesNotMatch(html, /id="article-topic"|id="article-sort"/);
+  const lists = [...html.matchAll(/<ol class="series-parts"[^>]*>([\s\S]*?)<\/ol>/g)];
+  lists.forEach((match, index) => {
+    const hrefs = [...match[1].matchAll(/<a href="([^"]+)"/g)].map(link => link[1]);
+    assert.deepEqual(hrefs.map(href => href.split("/").at(-1)), articleSeries[index].slugs);
+  });
+  const standalone = html.match(/<ul class="blog-results">([\s\S]*?)<\/ul>/)?.[1];
+  assert.ok(standalone);
+  for (const slug of articleSeries.flatMap(series => series.slugs)) assert.ok(!standalone.includes(slug), slug);
+  assert.match(standalone, /architecting-high-performance-solana/);
+});
+
+test("Latest articles is a date-ordered feed and links numbered parts back to their beginning", async () => {
+  const html = (await (await render("/blogs?view=latest")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").replace(/<!--.*?-->/g, "");
+  assert.match(html, /<a href="\/blogs\?view=latest" aria-current="page">Latest articles<\/a>/);
+  assert.doesNotMatch(html, /class="series-directory"/);
+  assert.match(html, /id="article-sort"/);
+  const dates = [...html.matchAll(/<time class="blog-entry-date" dateTime="([^"]+)"/gi)].map(match => Date.parse(match[1]));
+  assert.equal(dates.length, 12);
+  for (let index = 1; index < dates.length; index++) assert.ok(dates[index - 1] > dates[index]);
+  assert.match(html, /Sep 6, 2026/);
+  assert.match(html, /Part 6 of 6/);
+  assert.match(html, /Start series/);
+  assert.match(html, /href="https:\/\/andreyobruchkov1996.substack.com\/p\/understanding-solana-architecture-account-model-and-transactions-part-1-1bffae449650"/);
+  assert.doesNotMatch(html, /Part 1 of 1/);
+});
+
+test("search crosses series and standalone posts in either combined view", async () => {
+  for (const view of ["", "&view=latest"]) {
+    const html = (await (await render(`/blogs?q=Solana%20Part%203${view}`)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").replace(/<!--.*?-->/g, "");
+    assert.doesNotMatch(html, /class="series-directory"/);
+    assert.match(html, /Part 3 of 6/);
+    assert.match(html, /Start series/);
+    assert.match(html, /Search results/);
+    assert.match(html, /href="\/blogs\?view=latest&amp;q=Solana\+Part\+3"/);
+    const standalone = (await (await render(`/blogs?q=Borsh${view}`)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    assert.match(standalone, /Unpacking Borsh/);
+    assert.doesNotMatch(standalone, /article-series-position/);
+  }
+  const oldest = (await (await render("/blogs?sort=oldest")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.doesNotMatch(oldest, /class="series-directory"/);
+  assert.match(oldest, /Oldest first/);
+  const missing = (await (await render("/blogs?q=not-a-published-article")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  assert.match(missing, /No articles found/);
+  assert.match(missing, /Clear filters/);
+});
+
+test("individual chain pages retain their existing reading paths and layout", async () => {
+  for (const chain of ["evm", "solana", "hyperliquid"]) {
+    const html = (await (await render(`/blogs/${chain}`)).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    assert.doesNotMatch(html, /combined-library|Article views|class="series-directory"|article-series-position/);
+    assert.match(html, /class="blog-library"/);
+    if (chain !== "hyperliquid") assert.match(html, /class="reading-path"/);
+  }
+});

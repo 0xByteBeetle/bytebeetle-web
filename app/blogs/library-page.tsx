@@ -22,7 +22,7 @@ export function BlogLibraryPage({ chain, searchParams = {} }: { chain: ChainFilt
           </div>
           <a className="blog-publication" href="https://andreyobruchkov1996.substack.com" target="_blank" rel="noreferrer">Follow on Substack <span aria-hidden="true">↗</span></a>
         </header>
-        <BlogLibrary articles={substackArticles} chain={chain} introduction={chain === "all" ? undefined : <ReadingPath chain={chain} articles={substackArticles} />} initialQuery={single(searchParams.q)} initialTopic={single(searchParams.topic)} initialSort={single(searchParams.sort)} />
+        <BlogLibrary articles={substackArticles} chain={chain} introduction={chain === "all" ? undefined : <ReadingPath chain={chain} articles={substackArticles} />} initialQuery={single(searchParams.q)} initialTopic={single(searchParams.topic)} initialSort={single(searchParams.sort)} initialView={single(searchParams.view)} />
         {alternateArticles.length > 0 && <details className="blog-medium">
           <summary>Prefer reading on Medium? <span>{alternateArticles.length} articles available</span></summary>
           <ArticleArchive articles={alternateArticles} />

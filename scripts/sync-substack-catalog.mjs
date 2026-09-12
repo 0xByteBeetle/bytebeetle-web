@@ -24,6 +24,9 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 const output = articles.map((article) => {
   const chain = { evm: "EVM", solana: "Solana", hyperliquid: "Hyperliquid" }[article.chain];
   if (!chain) throw new Error(`Unknown ecosystem in companion catalog: ${article.chain}`);
+  if (!article.publishedAt || !Number.isFinite(Date.parse(article.publishedAt))) {
+    throw new Error(`Missing or invalid publication timestamp: ${article.slug}`);
+  }
   const isToken2022 =
     chain === "Solana" &&
     /token-2022|spl token|token metadata|interest-bearing|transfer hook|fee-on-transfer|confidential transfer|metadata pointer/i.test(
@@ -34,6 +37,7 @@ const output = articles.map((article) => {
     title: article.title,
     href: article.url,
     date: formatter.format(new Date(article.publishedAt)),
+    publishedAt: article.publishedAt,
     topic: isToken2022 ? "Token-2022" : chain,
     chain,
     ...(article.subject ? { subject: article.subject } : {}),
