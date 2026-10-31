@@ -43,7 +43,7 @@ const output = articles.map((article) => {
     ...(article.subject ? { subject: article.subject } : {}),
     ...(article.keywords ? { keywords: article.keywords } : {}),
     slug: article.slug,
-    solutionHref: `https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/${article.chain}/${article.slug}`,
+    solutionHref: `https://github.com/0xByteBeetle/blog-solutions/tree/main/${article.chain}/${article.slug}`,
     ...(article.corrections?.length ? { codeUpdated: true } : {}),
   };
 });

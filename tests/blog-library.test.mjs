@@ -10,8 +10,9 @@ test("the corrected wallet example points to the published main-branch article r
   const updated=catalog.filter(article=>article.codeUpdated);
   assert.equal(updated.length,1);
   assert.equal(updated[0].slug,"understanding-solana-part-6-transactions");
-  assert.equal(updated[0].solutionHref,"https://github.com/0xByteBeetle/blog-solutions/tree/main/articles/solana/understanding-solana-part-6-transactions");
+  assert.equal(updated[0].solutionHref,"https://github.com/0xByteBeetle/blog-solutions/tree/main/solana/understanding-solana-part-6-transactions");
   assert.ok(catalog.every(article=>!article.solutionHref.includes("codex/")));
+  assert.ok(catalog.every(article=>/^https:\/\/github\.com\/0xByteBeetle\/blog-solutions\/tree\/main\/(evm|solana)\//.test(article.solutionHref)));
 });
 
 test("topic browsing accounts for every catalog entry without duplicates", () => {
@@ -64,12 +65,19 @@ test("reading paths resolve to published articles and keep their explicit order"
     assert.equal(new Set(result.map(article => article.slug)).size, result.length);
   }
   assert.throws(() => readingPathArticles("EVM", []), /unpublished or missing/);
-  assert.deepEqual(readingPaths.Hyperliquid.slugs, ["hyperliquid-beyond-generic-vms-the"]);
+  assert.deepEqual(readingPaths.Hyperliquid.slugs, [
+    "hyperliquid-beyond-generic-vms-the",
+    "unpacking-hyperliquid-part-2-hyperbft",
+    "unpacking-hyperliquid-part-3-hyperevm",
+    "unpacking-hyperliquid-part-4-hip",
+    "unpacking-hyperliquid-part-5-agent",
+  ]);
 });
 
 test("editorial notes cover the published catalog without inventing article records", async () => {
   const { articleDescriptions, articlesWithoutCode } = await import("../app/article-notes.ts");
-  const publishedSlugs = [...catalog.map(article => article.slug), "hyperliquid-beyond-generic-vms-the"];
+  const { readingPaths } = await import("../app/reading-paths.ts");
+  const publishedSlugs = [...catalog.map(article => article.slug), ...readingPaths.Hyperliquid.slugs];
   assert.deepEqual(Object.keys(articleDescriptions).sort(), publishedSlugs.sort());
   assert.ok(Object.values(articleDescriptions).every(description => description.length > 40 && description.length < 190));
   assert.ok([...articlesWithoutCode].every(slug => publishedSlugs.includes(slug)));
@@ -94,9 +102,9 @@ test("publication sorting uses the original timestamps, including posts on the s
 });
 
 test("numbered series resolve in part order and never consume standalone articles", async () => {
-  const { articleSeries, resolveSeries, articleSeriesPosition } = await import("../app/reading-paths.ts");
+  const { articleSeries, resolveSeries, articleSeriesPosition, readingPaths } = await import("../app/reading-paths.ts");
   const hyperliquid = { slug: "hyperliquid-beyond-generic-vms-the", chain: "Hyperliquid", title: "Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1" };
-  const all = [...catalog, hyperliquid];
+  const all = [...catalog, ...readingPaths.Hyperliquid.slugs.map((slug, index) => ({ slug, chain: "Hyperliquid", title: `Hyperliquid Part ${index + 1}` }))];
   const assigned = articleSeries.flatMap(series => {
     const ordered = resolveSeries(series, [...all].reverse());
     assert.deepEqual(ordered.map(article => article.slug), series.slugs);
@@ -107,8 +115,8 @@ test("numbered series resolve in part order and never consume standalone article
     return ordered;
   });
   assert.equal(articleSeries.length, 5);
-  assert.equal(assigned.length, 14);
-  assert.equal(new Set(assigned.map(article => article.slug)).size, 14);
+  assert.equal(assigned.length, 18);
+  assert.equal(new Set(assigned.map(article => article.slug)).size, 18);
   const standalone = all.filter(article => !articleSeriesPosition(article));
   assert.equal(standalone.length, 40);
   assert.equal(standalone.length + assigned.length, all.length);

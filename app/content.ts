@@ -19,7 +19,7 @@ export type Article = {
 };
 
 // Public posts that do not yet have an entry in the companion-code catalog.
-// Verified against the public Substack feed on 2026-09-12. Never list drafts.
+// Verified against the public Substack pages on 2026-10-31. Never list drafts.
 const additionalPublishedArticles: Article[] = [
   {
     title: "Hyperliquid: Beyond Generic VMs: The Architecture Internals Part 1",
@@ -32,6 +32,55 @@ const additionalPublishedArticles: Article[] = [
     subject: "Architecture",
     keywords: ["HyperCore", "HyperEVM", "clearinghouse", "cross-margin", "agent keys", "order book"],
     slug: "hyperliquid-beyond-generic-vms-the",
+    solutionHref: "https://github.com/0xByteBeetle/blog-solutions/tree/main/hyperliquid/hyperliquid-beyond-generic-vms-the",
+  },
+  {
+    title: "Unpacking Hyperliquid Part 2: HyperBFT, Spot vs. Perp Accounting, and Trading",
+    href: "https://andreyobruchkov1996.substack.com/p/unpacking-hyperliquid-part-2-hyperbft",
+    date: "October 2026",
+    publishedAt: "2026-10-10T22:24:25.725Z",
+    topic: "Hyperliquid",
+    chain: "Hyperliquid",
+    subject: "Consensus & accounting",
+    keywords: ["HyperBFT", "HyperCore", "spot", "perpetuals", "clearinghouse", "sub-accounts", "trading"],
+    slug: "unpacking-hyperliquid-part-2-hyperbft",
+    solutionHref: "https://github.com/0xByteBeetle/blog-solutions/tree/main/hyperliquid/unpacking-hyperliquid-part-2-hyperbft",
+  },
+  {
+    title: "Unpacking Hyperliquid Part 3: HyperEVM Precompiles, CoreWriter, and the Solidity Bridge to HyperCore",
+    href: "https://andreyobruchkov1996.substack.com/p/unpacking-hyperliquid-part-3-hyperevm",
+    date: "October 2026",
+    publishedAt: "2026-10-13T07:42:47.700Z",
+    topic: "Hyperliquid",
+    chain: "Hyperliquid",
+    subject: "Precompiles & CoreWriter",
+    keywords: ["HyperEVM", "HyperCore", "precompiles", "CoreWriter", "Solidity", "price scaling"],
+    slug: "unpacking-hyperliquid-part-3-hyperevm",
+    solutionHref: "https://github.com/0xByteBeetle/blog-solutions/tree/main/hyperliquid/unpacking-hyperliquid-part-3-hyperevm",
+  },
+  {
+    title: "Unpacking Hyperliquid Part 4: HIP-3, Builder-Deployed Perpetuals, and the New Market Trust Boundary",
+    href: "https://andreyobruchkov1996.substack.com/p/unpacking-hyperliquid-part-4-hip",
+    date: "October 2026",
+    publishedAt: "2026-10-21T17:51:28.008Z",
+    topic: "Hyperliquid",
+    chain: "Hyperliquid",
+    subject: "HIP-3 markets",
+    keywords: ["HIP-3", "HyperCore", "builder-deployed perpetuals", "oracles", "deployment", "trust boundary"],
+    slug: "unpacking-hyperliquid-part-4-hip",
+    solutionHref: "https://github.com/0xByteBeetle/blog-solutions/tree/main/hyperliquid/unpacking-hyperliquid-part-4-hip",
+  },
+  {
+    title: "Unpacking Hyperliquid Part 5: Agent Wallets, Phantom Signatures, and the Nonce State Machine",
+    href: "https://andreyobruchkov1996.substack.com/p/unpacking-hyperliquid-part-5-agent",
+    date: "October 2026",
+    publishedAt: "2026-10-29T08:48:26.013Z",
+    topic: "Hyperliquid",
+    chain: "Hyperliquid",
+    subject: "Signing & nonces",
+    keywords: ["agent wallets", "HyperCore", "phantom signatures", "nonces", "EIP-712", "signing"],
+    slug: "unpacking-hyperliquid-part-5-agent",
+    solutionHref: "https://github.com/0xByteBeetle/blog-solutions/tree/main/hyperliquid/unpacking-hyperliquid-part-5-agent",
   },
 ];
 

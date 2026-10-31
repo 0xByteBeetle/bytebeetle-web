@@ -4,6 +4,7 @@ import { ecosystems } from "./ecosystems";
 
 const navigation = [
   { href: "/bootcamps", label: "Bootcamps", key: "bootcamps" },
+  { href: "/consulting", label: "Consulting", key: "consulting" },
   { href: "/about", label: "About", key: "about" },
   { href: "/contact", label: "Contact", key: "contact" },
 ];

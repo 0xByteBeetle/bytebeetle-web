@@ -6,9 +6,9 @@ const valid = () => ({ course: "evm-engineering", name: "Reader", email: "reader
 const request = payload => new Request("https://0xbytebeetle.com/api/course-interest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 
 test("a course request saves the visitor and server-selected course without a message field", async () => {
-  for (const [course, title] of [["evm-engineering", "EVM Engineering Bootcamp"], ["advanced-evm", "Advanced EVM Bootcamp"]]) {
+  for (const [course, title, waitlist] of [["evm-engineering", "EVM Engineering Bootcamp", false], ["advanced-evm", "Advanced EVM Bootcamp", true], ["solana", "Solana Bootcamp", true]]) {
     const saved = [];
-    const response = await handleCourseInterest(request({ ...valid(), course, message: "Ignore the selected course" }), async input => { saved.push(input); });
+    const response = await handleCourseInterest(request({ ...valid(), course, message: "Ignore the selected course", kind: "enrollment", waitlist: false }), async input => { saved.push(input); });
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { ok: true });
     assert.equal(saved.length, 1);
@@ -16,11 +16,13 @@ test("a course request saves the visitor and server-selected course without a me
     assert.match(saved[0].message, new RegExp(title));
     assert.match(saved[0].message, /not a newsletter subscription/);
     assert.doesNotMatch(saved[0].message, /Ignore/);
+    assert.ok(saved[0].message.startsWith(waitlist ? "Waitlist interest:" : "Course enquiry:"));
+    if (waitlist) assert.match(saved[0].message, /not enrollment, payment, or course access/);
   }
 });
 
 test("course requests reject invalid fields and malformed payloads without saving", async () => {
-  const invalid = [null, [], { ...valid(), course: "unknown" }, { ...valid(), course: "__proto__" }, { ...valid(), email: "wrong" }, { ...valid(), email: "" }, { ...valid(), name: "x".repeat(101) }, { ...valid(), startedAt: null }, { ...valid(), startedAt: Date.now() + 10000 }];
+  const invalid = [null, [], { ...valid(), course: "unknown" }, { ...valid(), course: "__proto__" }, { ...valid(), course: "constructor" }, { ...valid(), course: ["solana"] }, { ...valid(), email: "wrong" }, { ...valid(), email: "" }, { ...valid(), name: "x".repeat(101) }, { ...valid(), startedAt: null }, { ...valid(), startedAt: Date.now() + 10000 }];
   for (const payload of invalid) {
     const response = await handleCourseInterest(request(payload), async () => assert.fail("Must not save invalid request"));
     assert.ok([400, 429].includes(response.status));

@@ -43,6 +43,7 @@
 /* Course comparison and curricula: keep meaningful week/module numbers. */
 .site-design .course-directory { background: var(--soft); gap: 60px; }
 .site-design .course-directory-card,.site-design .course-directory-card.soft-card { min-height: 0; padding: 0; border-radius: 0; background: transparent; }
+.site-design .course-directory-card.future-course { grid-column: 1 / -1; }
 .site-design .course-status { margin-bottom: 18px; font: 400 14px/1.5 var(--font-editorial-sans); text-transform: none; letter-spacing: 0; }
 .site-design .course-status > span:first-child { display: none; }
 .site-design .course-directory-card h2 { font: 400 34px/1.15 var(--font-editorial-serif); letter-spacing: -.02em; margin-bottom: 18px; }

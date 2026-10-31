@@ -1,7 +1,4 @@
-const courses = {
-  "evm-engineering": "EVM Engineering Bootcamp",
-  "advanced-evm": "Advanced EVM Bootcamp",
-};
+import { courseOptions } from "../../bootcamps/course-options.mjs";
 
 export type CourseRequest = {
   name: string | null;
@@ -34,7 +31,7 @@ export async function handleCourseInterest(request: Request, save: (input: Cours
   } catch { return json({ message: "Please check your details and try again." }, 400); }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return json({ message: "Please check your details and try again." }, 400);
   if (typeof payload.website === "string" && payload.website.trim()) return json({ ok: true });
-  if (typeof payload.course !== "string" || !Object.hasOwn(courses, payload.course)) return json({ message: "Please use a bootcamp’s interest form." }, 400);
+  if (typeof payload.course !== "string" || !Object.hasOwn(courseOptions, payload.course)) return json({ message: "Please use a bootcamp’s interest form." }, 400);
   const email = typeof payload.email === "string" ? payload.email.trim() : "";
   const name = typeof payload.name === "string" ? payload.name.trim() : "";
   if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ message: "Please enter a valid email address." }, 400);
@@ -43,9 +40,12 @@ export async function handleCourseInterest(request: Request, save: (input: Cours
   if (typeof startedAt !== "number" || !Number.isFinite(startedAt) || startedAt <= 0 || Date.now() - startedAt < 1500) {
     return json({ message: "Please wait a moment, then submit again." }, 429);
   }
-  const course = courses[payload.course as keyof typeof courses];
+  const course = courseOptions[payload.course as keyof typeof courseOptions];
+  const message = course.waitlist
+    ? `Waitlist interest: ${course.title}\n\nPlease contact me by email about future availability. This is a waitlist request, not enrollment, payment, or course access. This is not a newsletter subscription.`
+    : `Course enquiry: ${course.title}\n\nPlease contact me by email about this bootcamp. This is not a newsletter subscription.`;
   try {
-    await save({ name: name || null, email, telegram: null, discord: null, message: `Course enquiry: ${course}\n\nPlease contact me by email about this bootcamp. This is not a newsletter subscription.` });
+    await save({ name: name || null, email, telegram: null, discord: null, message });
     return json({ ok: true });
   } catch {
     return json({ message: "Your request could not be saved. Please try again, or email me directly." }, 503);

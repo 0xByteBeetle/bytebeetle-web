@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 const ownedResources = [
   {
-    label: "EVM · Solana",
+    label: "EVM · Solana · Hyperliquid",
     title: "Blog Solutions",
-    description: "Companion code for the EVM and Solana articles, organized by post.",
+    description: "Companion code for the published EVM, Solana, and Hyperliquid articles, organized by post.",
     href: "https://github.com/0xByteBeetle/blog-solutions",
   },
   {
@@ -56,7 +56,7 @@ export default function ResourcesPage() {
           <p>Explore the weekly topics, hands-on work, and learning outcomes directly on each bootcamp page.</p>
         </div>
         <div className="document-links">
-          <a href="/bootcamps/evm-engineering#curriculum"><span>EVM foundation</span><strong>EVM Engineering Bootcamp curriculum</strong><span>Explore curriculum →</span></a>
+          <a href="/bootcamps/evm-engineering#curriculum"><span>EVM engineering</span><strong>EVM Engineering Bootcamp curriculum</strong><span>Explore curriculum →</span></a>
           <a href="/bootcamps/advanced-evm#curriculum"><span>EVM advanced</span><strong>Advanced EVM Bootcamp curriculum</strong><span>Explore curriculum →</span></a>
         </div>
       </section>

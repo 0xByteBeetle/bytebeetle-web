@@ -7,7 +7,7 @@ import { SiteFooter, SiteHeader } from "../../site-shell";
 
 export const metadata: Metadata = {
   title: "EVM Engineering Bootcamp | 0xByteBeetle",
-  description: "A foundational six-week curriculum for understanding and building EVM systems.",
+  description: "Build a deep understanding of EVM execution through calldata, bytecode, transactions, traces, and a full-stack project. Study at your own pace.",
 };
 
 export default function EvmEngineeringPage() {
@@ -16,17 +16,20 @@ export default function EvmEngineeringPage() {
       <SiteHeader active="bootcamps" />
       <section className="course-hero">
         <div>
-          <p className="eyebrow">EVM foundation · Complete curriculum</p>
+          <p className="eyebrow">EVM engineering · Complete curriculum</p>
           <h1>EVM Engineering Bootcamp</h1>
-          <p className="hero-lede">Understand how Ethereum works from the inside, then connect it to a working application. This six-week curriculum starts with nodes and EVM execution and builds toward a token-swap app with live transaction monitoring.</p>
-          <p className="course-prerequisites">You should be comfortable with basic Solidity and writing code. The articles are open to any curious technical reader; this course includes substantial implementation work.</p>
+          <p className="hero-lede">Build a deep understanding of the EVM, starting from its foundations and following how contracts and transactions execute. Inspect calldata, bytecode, call contexts, signatures, and transaction traces, then bring them together in a token-swap app with live monitoring. Study at your own pace.</p>
+          <p className="course-prerequisites">For programmers with some Solidity experience. The course develops the execution model in depth through substantial implementation work.</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#curriculum">Explore the curriculum ↓</a>
             <a className="button button-secondary" href="#course-interest">Get in touch</a>
           </div>
         </div>
         <aside className="course-facts">
-          <div><span>Length</span><strong>6 weeks</strong></div>
+          <div><span>Format</span><strong>Self-paced</strong></div>
+          <div><span>Current introductory price</span><strong>$799</strong><span>Prices will increase for future enrollments.</span></div>
+          <div><span>Expected completion</span><strong>6–7 weeks</strong></div>
+          <div><span>Extended study and support</span><strong>Up to 12 weeks</strong></div>
           <div><span>Depth</span><strong>20 modules</strong></div>
           <div><span>Tools</span><strong>Foundry, Anvil, Geth, Go, Python</strong></div>
           <div><span>Project</span><strong>Token-swap app and monitoring system</strong></div>
@@ -48,11 +51,26 @@ export default function EvmEngineeringPage() {
         </div>
       </section>
 
+      <section className="two-column-detail course-overview" aria-labelledby="course-support-heading">
+        <div>
+          <p className="eyebrow">Study and support</p>
+          <h2 id="course-support-heading">Work at your own pace, with private guidance.</h2>
+          <p>The course is designed to take six to seven weeks. You can extend your active study period up to twelve weeks.</p>
+        </div>
+        <div className="detail-stack">
+          <h3>One-to-one sessions</h3>
+          <p>Up to two 45-minute private sessions per week during your active study period, for up to twelve weeks.</p>
+          <h3>Telegram questions and code reviews</h3>
+          <p>Telegram questions and code reviews are included for up to twelve weeks.</p>
+          <p>Make time to work through the lessons, complete the exercises, and take part in your sessions. Your progress depends on your participation.</p>
+        </div>
+      </section>
+
       <section className="curriculum-section" id="curriculum" aria-labelledby="curriculum-heading">
         <div className="section-heading compact-heading">
           <p className="eyebrow">Curriculum map</p>
           <h2 id="curriculum-heading">From protocol mechanics to a working system.</h2>
-          <p>Explore the topics, practical work, and outcomes for each week. The final two weeks come together in one full-stack project.</p>
+          <p>Explore the topics, practical work, and outcomes for each week. The week labels organize the curriculum; work through them at your own pace. The final two curriculum weeks come together in one full-stack project.</p>
         </div>
         <Curriculum weeks={foundationCurriculum} />
       </section>

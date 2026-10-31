@@ -27,8 +27,14 @@ export const readingPaths: Record<Ecosystem, { title: string; introduction: stri
   },
   Hyperliquid: {
     title: "Inside Hyperliquid’s architecture",
-    introduction: "The series begins with HyperCore, HyperEVM, and how the exchange fits together. Part 1 is available now.",
-    slugs: ["hyperliquid-beyond-generic-vms-the"],
+    introduction: "Follow the five published parts from HyperCore and HyperEVM to consensus, accounting, market deployment, and signing.",
+    slugs: [
+      "hyperliquid-beyond-generic-vms-the",
+      "unpacking-hyperliquid-part-2-hyperbft",
+      "unpacking-hyperliquid-part-3-hyperevm",
+      "unpacking-hyperliquid-part-4-hip",
+      "unpacking-hyperliquid-part-5-agent",
+    ],
   },
 };
 

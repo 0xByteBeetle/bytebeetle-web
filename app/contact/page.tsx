@@ -16,7 +16,7 @@ export default function ContactPage() {
         <div className="contact-context">
           <p className="eyebrow">Contact</p>
           <h1>Send me a note.</h1>
-          <p>A question about an article, a bootcamp, or something you are working on? I read these messages myself.</p>
+          <p>For technical writing, consulting, one-to-one mentoring, or a bootcamp enquiry, tell me what you have in mind. I read these messages myself.</p>
           <p className="direct-contact">Email me directly at <EmailLink />, or leave a message using the form.</p>
           <p className="contact-small-note">Leave whichever contact works for you: email, Telegram, or Discord. You only need one.</p>
         </div>

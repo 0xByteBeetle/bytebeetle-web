@@ -13,7 +13,7 @@ export function Curriculum({ weeks, planned = false }: { weeks: CurriculumWeek[]
   return (
     <div className="course-curriculum" ref={container}>
       <div className="curriculum-toolbar">
-        <p>{planned ? "Working curriculum · subject to refinement" : "Six weeks, from foundations to a full-stack project"}</p>
+        <p>{planned ? "Working curriculum · subject to refinement" : "From foundations to a full-stack project"}</p>
         <div>
           <button type="button" onClick={() => setAll(true)} aria-controls="curriculum-weeks">Expand all weeks</button>
           <button type="button" onClick={() => setAll(false)} aria-controls="curriculum-weeks">Collapse all</button>

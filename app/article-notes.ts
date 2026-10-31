@@ -55,6 +55,10 @@ export const articleDescriptions: Record<string, string> = {
   "what-every-blockchain-developer-should-know-about-evm-internals-part-2-eab0f4fae3de": "Continue the original EVM internals series with a closer look at contract execution.",
   "what-every-blockchain-developer-should-know-about-evm-internals-part-1-83a93c618257": "What is the EVM actually executing? Start with gas, bytecode, and the places a contract keeps its data.",
   "hyperliquid-beyond-generic-vms-the": "Why split a blockchain into HyperCore and HyperEVM? Start with the architecture behind the exchange.",
+  "unpacking-hyperliquid-part-2-hyperbft": "Follow HyperBFT, spot and perp accounting, and the lifecycle of a trade through HyperCore.",
+  "unpacking-hyperliquid-part-3-hyperevm": "Connect Solidity to HyperCore through read precompiles, price scaling, and CoreWriter actions.",
+  "unpacking-hyperliquid-part-4-hip": "Explore HIP-3 market deployment, oracle responsibilities, and the trust boundary for builders.",
+  "unpacking-hyperliquid-part-5-agent": "Trace agent wallets, phantom signatures, and nonce allocation through the signing process.",
 };
 
 export const articlesWithoutCode = new Set([
